@@ -44,8 +44,8 @@ public class PayServiceImpl implements PayService {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, true);
         try {
             String ip = InetAddress.getLocalHost().getHostAddress();
-            Map<String, String> pppp = payOrder.getDefaultOrderDatas(body,tradeNo,totalFee,ip,openId);
-            Map<String,String> resData = wxPay.unifiedOrder(pppp);
+            Map<String, String> p = payOrder.getDefaultOrderDatas(body,tradeNo,totalFee,ip,openId);
+            Map<String,String> resData = wxPay.unifiedOrder(p);
             if (validateWxPayResult(resData)){
                 PayOrderResult result = new PayOrderResult();
                 BeanUtils.populate(result,resData);
