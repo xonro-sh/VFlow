@@ -4,9 +4,9 @@ import com.xonro.weixinpay.bean.PayOrderResult;
 import com.xonro.weixinpay.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * 支付服务控制器
@@ -28,7 +28,7 @@ public class PayController {
      * @return 预支付信息
      */
     @RequestMapping(value = "/payOrder")
-    public PayOrderResult createPayOrder(String body, String tradeNo, Integer totalFee, String openId){
+    public PayOrderResult createPayOrder(@RequestParam String body, @RequestParam String tradeNo, @RequestParam Integer totalFee, String openId){
         return payService.payOrder(body,tradeNo, totalFee, openId);
     }
 }
