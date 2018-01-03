@@ -5,6 +5,7 @@ import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayConstants;
 import com.xonro.weixinpay.bean.*;
 import com.xonro.weixinpay.enums.WechatEnum;
+import com.xonro.weixinpay.exception.WxPayException;
 import com.xonro.weixinpay.service.PayService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,14 +28,6 @@ public class PayServiceImpl implements PayService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private WXPayConfig wxPayConfig;
-    @Autowired
-    private PayOrder payOrder;
-    @Autowired
-    private OrderQuery orderQuery;
-    @Autowired
-    private CloseOrder closeOrder;
-    @Autowired
-    private Refund refund;
 
     /**
      * 统一下单
@@ -49,7 +42,7 @@ public class PayServiceImpl implements PayService {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
             String ip = InetAddress.getLocalHost().getHostAddress();
-            Map<String, String> p = payOrder.getDefaultOrderDatas(body,tradeNo,totalFee,ip,openId);
+            Map<String, String> p = new PayOrder().getDefaultOrderDatas(body,tradeNo,totalFee,ip,openId);
             Map<String,String> resData = wxPay.unifiedOrder(p);
             if (validateWxPayResult(resData)){
                 PayOrderResult result = new PayOrderResult();
@@ -71,7 +64,7 @@ public class PayServiceImpl implements PayService {
     public Map<String, String> orderQueryByTransactionId(@NotNull String transactionId){
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
-            Map<String, String> p = orderQuery.getOrderQueryByTransactionId(transactionId);
+            Map<String, String> p = new OrderQuery().getOrderQueryByTransactionId(transactionId);
             Map<String, String> resData = wxPay.orderQuery(p);
             return resData;
         } catch (Exception e) {
@@ -89,7 +82,7 @@ public class PayServiceImpl implements PayService {
     public Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo) {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
-            Map<String, String> p = orderQuery.getOrderQueryByOutTradeNo(outTradeNo);
+            Map<String, String> p = new OrderQuery().getOrderQueryByOutTradeNo(outTradeNo);
             Map<String, String> resData = wxPay.orderQuery(p);
             return resData;
         } catch (Exception e) {
@@ -108,7 +101,7 @@ public class PayServiceImpl implements PayService {
     public CloseOrderResult closeOrderByOutTradeNo(@NotNull String outTradeNo) {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
-            Map<String, String> p = closeOrder.getCloseOrderByOutTradeNo(outTradeNo);
+            Map<String, String> p = new CloseOrder().getCloseOrderByOutTradeNo(outTradeNo);
             Map<String, String> resData = wxPay.closeOrder(p);
             if (validateWxPayResult(resData)){
                 CloseOrderResult result = new CloseOrderResult();
@@ -137,7 +130,7 @@ public class PayServiceImpl implements PayService {
     public Map<String, String> refundByTransactionId(@NotNull String transactionId, @NotNull String outRefundNo, @NotNull Integer totalFee, @NotNull Integer refundFee, String refundFeeType, String refundDesc, String refundAccount) {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
-            Map<String, String> p = refund.refundByTransactionId(transactionId, outRefundNo, totalFee, refundFee, refundFeeType, refundDesc, refundAccount);
+            Map<String, String> p = new Refund().refundByTransactionId(transactionId, outRefundNo, totalFee, refundFee, refundFeeType, refundDesc, refundAccount);
             Map<String, String> resData = wxPay.refund(p);
             return resData;
         } catch (Exception e) {
@@ -162,7 +155,7 @@ public class PayServiceImpl implements PayService {
     public Map<String, String> refundByOutTradeNo(@NotNull String outTradeNo, @NotNull String outRefundNo, @NotNull Integer totalFee, @NotNull Integer refundFee, String refundFeeType, String refundDesc, String refundAccount) {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
-            Map<String, String> p = refund.refundByOutTradeNo(outTradeNo, outRefundNo, totalFee, refundFee, refundFeeType, refundDesc, refundAccount);
+            Map<String, String> p = new Refund().refundByOutTradeNo(outTradeNo, outRefundNo, totalFee, refundFee, refundFeeType, refundDesc, refundAccount);
             Map<String, String> resData = wxPay.refund(p);
             return resData;
         } catch (Exception e) {
@@ -172,15 +165,24 @@ public class PayServiceImpl implements PayService {
     }
 
 
-    private boolean validateWxPayResult(Map<String,String> resDatas){
-        if (resDatas != null && !resDatas.isEmpty()){
-            String reCode = resDatas.get("return_code");
-            if (StringUtils.isNotEmpty(reCode) && WechatEnum.RETURN_CODE_SUCCESS.getValue().equals(reCode)){
-                return true;
+    /**
+     * 校验微信支付接口响应是否正确
+     * @param resData
+     * @return
+     */
+    private boolean validateWxPayResult(Map<String,String> resData){
+        try {
+            if (resData != null && !resData.isEmpty()){
+                String reCode = resData.get("return_code");
+                if (StringUtils.isNotEmpty(reCode) && WechatEnum.RETURN_CODE_SUCCESS.getValue().equals(reCode)){
+                    return true;
+                }
+                throw new WxPayException(reCode, resData.get("return_msg"));
+            }else {
+                throw new WxPayException("FAIL","service response is empty");
             }
-            logger.error(resDatas.get("return_msg"),new Throwable("request wxpay service error"));
-        }else {
-            logger.error("service response is empty",new Throwable("request wxpay service error"));
+        } catch (WxPayException e) {
+            logger.error(e.getMessage(),e);
         }
         return false;
     }
