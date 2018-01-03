@@ -4,6 +4,7 @@ import com.github.wxpay.sdk.WXPayConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -26,6 +27,12 @@ public class WxPayConfImpl implements WXPayConfig{
 
     @Value("${wechat.pay.key}")
     private String payKey;
+
+    private InputStream inputStream = WxPayConfImpl.class.getClassLoader().getResourceAsStream("apiclient_cert.p12");
+
+    public WxPayConfImpl() throws FileNotFoundException {
+    }
+
     @Override
     public String getAppID() {
         return this.appId;
@@ -43,7 +50,7 @@ public class WxPayConfImpl implements WXPayConfig{
 
     @Override
     public InputStream getCertStream() {
-        return null;
+        return this.inputStream;
     }
 
     @Override

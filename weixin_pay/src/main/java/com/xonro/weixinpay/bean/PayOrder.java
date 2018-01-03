@@ -1,7 +1,6 @@
 package com.xonro.weixinpay.bean;
 
 import com.xonro.weixinpay.helper.VariableHelper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import java.util.Map;
 public class PayOrder implements Serializable{
     @Autowired
     private VariableHelper variableHelper;
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 设备号，自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传"WEB"
      */
@@ -81,11 +78,11 @@ public class PayOrder implements Serializable{
      */
     private String trade_type = "JSAPI";
     /**
-     * 商品ID
+     * 商品ID,trade_type=NATIVE时（即扫码支付），此参数必传。此参数为二维码中包含的商品ID，商户自行定义
      */
     private String product_id;
     /**
-     * 指定支付方式
+     * 指定支付方式 上传此参数no_credit--可限制用户不能使用信用卡支付
      */
     private String limit_pay;
     /**
@@ -102,14 +99,7 @@ public class PayOrder implements Serializable{
         order.setOpenid(openid);
         order.setNotify_url(notify_url);
 
-        try {
-            Map<String,String> datas = BeanUtils.describe(order);
-            datas.remove("class");
-            return variableHelper.removeEmptyValue(datas);
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            throw e;
-        }
+        return variableHelper.removeEmptyValue(order);
     }
 
     public String getDevice_info() {
