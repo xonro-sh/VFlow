@@ -44,39 +44,62 @@ public interface PayService {
 
     /**
      * 用微信订单号退款
-     * @param transactionId 微信订单号
-     * @param outRefundNo 商户退款单号
-     * @param totalFee 订单金额
-     * @param refundFee 退款金额
-     * @param refundFeeType 货币种类
-     * @param refundDesc 退款原因
-     * @param refundAccount 退款资金来源
+     * @param refundByTransactionId 使用微信订单号来获取退款模型
      * @return 退款结果
      */
-    Map<String, String> refundByTransactionId(@NotNull String transactionId,
-                                              @NotNull String outRefundNo,
-                                              @NotNull Integer totalFee,
-                                              @NotNull Integer refundFee,
-                                              String refundFeeType,
-                                              String refundDesc,
-                                              String refundAccount);
+    Map<String, String> refundByTransactionId(RefundByTransactionId refundByTransactionId);
 
     /**
      * 用商户订单号退款
-     * @param outTradeNo 商户订单号
-     * @param outRefundNo 商户退款单号
-     * @param totalFee 订单金额
-     * @param refundFee 退款金额
-     * @param refundFeeType 货币种类
-     * @param refundDesc 退款原因
-     * @param refundAccount 退款资金来源
+     * @param refundByOutTradeNo 使用商户订单号来获取退款模型
      * @return 退款结果
      */
-    Map<String, String> refundByOutTradeNo(@NotNull String outTradeNo,
-                                           @NotNull String outRefundNo,
-                                           @NotNull Integer totalFee,
-                                           @NotNull Integer refundFee,
-                                           String refundFeeType,
-                                           String refundDesc,
-                                           String refundAccount);
+    Map<String, String> refundByOutTradeNo(RefundByOutTradeNo refundByOutTradeNo);
+
+    /**
+     * 用微信订单号查询退款记录
+     * @param transactionId 微信订单号
+     * @param offset 偏移量，当部分退款次数超过10次时可使用，表示返回的查询结果从这个偏移量开始取记录
+     * @return 退款记录
+     */
+    Map<String, String> refundQueryByTransactionId(@NotNull String transactionId, String offset);
+
+    /**
+     * 用商户订单号查询退款记录
+     * @param outTradeNo 商户订单号
+     * @param offset 偏移量，当部分退款次数超过10次时可使用，表示返回的查询结果从这个偏移量开始取记录
+     * @return 退款记录
+     */
+    Map<String, String> refundQueryByOutTradeNo(@NotNull String outTradeNo, String offset);
+
+    /**
+     * 用商户退款单号查询退款记录
+     * @param outRefundNo 商户退款单号
+     * @param offset 偏移量，当部分退款次数超过10次时可使用，表示返回的查询结果从这个偏移量开始取记录
+     * @return 退款记录
+     */
+    Map<String, String> refundQueryByOutRefundNo(@NotNull String outRefundNo, String offset);
+
+    /**
+     * 用微信退款单号查询退款记录
+     * @param refundId 微信退款单号
+     * @param offset 偏移量，当部分退款次数超过10次时可使用，表示返回的查询结果从这个偏移量开始取记录
+     * @return 退款记录
+     */
+    Map<String, String> refundQueryByRefundId(@NotNull String refundId, String offset);
+
+    /**
+     * 下载对账单
+     * @param billDate 对账单日期
+     * @param billType 账单类型
+     * @return 对账单数据
+     */
+    Map<String, String> downloadBill(@NotNull String billDate, @NotNull String billType);
+
+    /**
+     * 微信支付结果通知
+     * @param notifyData 支付结果
+     * @return 支付结果
+     */
+    String payNotify(String notifyData);
 }

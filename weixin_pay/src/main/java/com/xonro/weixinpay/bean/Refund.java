@@ -16,8 +16,7 @@ import java.util.Map;
  */
 @Component
 public class Refund implements Serializable{
-    @Autowired
-    private VariableHelper variableHelper;
+    private VariableHelper variableHelper = new VariableHelper();
     /**
      * 微信订单号
      */
@@ -54,39 +53,27 @@ public class Refund implements Serializable{
      */
     private String refund_account;
 
-    public Map<String,String> refundByTransactionId(String transactionId,
-                                                    String outRefundNo,
-                                                    Integer totalFee,
-                                                    Integer refundFee,
-                                                    String refundFeeType,
-                                                    String refundDesc,
-                                                    String refundAccount) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public Map<String,String> refundByTransactionId(RefundByTransactionId refundByTransactionId) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Refund refund = new Refund();
-        refund.setTransaction_id(transactionId);
-        refund.setOut_refund_no(outRefundNo);
-        refund.setTotal_fee(totalFee);
-        refund.setRefund_fee(refundFee);
-        refund.setRefund_fee_type(refundFeeType);
-        refund.setRefund_desc(refundDesc);
-        refund.setRefund_account(refundAccount);
+        refund.setTransaction_id(refundByTransactionId.getTransactionId());
+        refund.setOut_refund_no(refundByTransactionId.getOutRefundNo());
+        refund.setTotal_fee(refundByTransactionId.getTotalFee());
+        refund.setRefund_fee(refundByTransactionId.getRefundFee());
+        refund.setRefund_fee_type(refundByTransactionId.getRefundFeeType());
+        refund.setRefund_desc(refundByTransactionId.getRefundDesc());
+        refund.setRefund_account(refundByTransactionId.getRefundAccount());
         return variableHelper.removeEmptyValue(refund);
     }
 
-    public Map<String,String> refundByOutTradeNo(String outTradeNo,
-                                                 String outRefundNo,
-                                                 Integer totalFee,
-                                                 Integer refundFee,
-                                                 String refundFeeType,
-                                                 String refundDesc,
-                                                 String refundAccount) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public Map<String,String> refundByOutTradeNo(RefundByOutTradeNo refundByOutTradeNo) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Refund refund = new Refund();
-        refund.setOut_trade_no(outTradeNo);
-        refund.setOut_refund_no(outRefundNo);
-        refund.setTotal_fee(totalFee);
-        refund.setRefund_fee(refundFee);
-        refund.setRefund_fee_type(refundFeeType);
-        refund.setRefund_desc(refundDesc);
-        refund.setRefund_account(refundAccount);
+        refund.setOut_trade_no(refundByOutTradeNo.getOutTradeNo());
+        refund.setOut_refund_no(refundByOutTradeNo.getOutRefundNo());
+        refund.setTotal_fee(refundByOutTradeNo.getTotalFee());
+        refund.setRefund_fee(refundByOutTradeNo.getRefundFee());
+        refund.setRefund_fee_type(refundByOutTradeNo.getRefundFeeType());
+        refund.setRefund_desc(refundByOutTradeNo.getRefundDesc());
+        refund.setRefund_account(refundByOutTradeNo.getRefundAccount());
         return variableHelper.removeEmptyValue(refund);
     }
 

@@ -15,8 +15,7 @@ import java.util.Map;
  */
 @Component
 public class OrderQuery implements Serializable{
-    @Autowired
-    private VariableHelper variableHelper;
+    private VariableHelper variableHelper = new VariableHelper();
 
     /**
      * 微信订单号，建议优先使用

@@ -15,8 +15,7 @@ import java.util.Map;
  */
 @Component
 public class CloseOrder implements Serializable{
-    @Autowired
-    private VariableHelper variableHelper;
+    private VariableHelper variableHelper = new VariableHelper();
     /**
      * 商户订单
      */

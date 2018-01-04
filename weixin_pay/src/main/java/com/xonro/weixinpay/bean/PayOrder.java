@@ -18,8 +18,7 @@ import java.util.Map;
  */
 @Component
 public class PayOrder implements Serializable{
-    @Autowired
-    private VariableHelper variableHelper;
+    private VariableHelper variableHelper = new VariableHelper();
     /**
      * 设备号，自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传"WEB"
      */
