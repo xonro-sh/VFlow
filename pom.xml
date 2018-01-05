@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>VFlow</name>
-	<description>Spring  boot project for xonro&#39;s VFlow suites</description>
+	<description>Spring  boot project for xonro VFlow suites</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -17,6 +17,11 @@
 		<version>1.5.9.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<modules>
+		<module>weixin_pay</module>
+		<module>service_no</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,11 +59,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.wxpay</groupId>
-			<artifactId>wxpay-sdk</artifactId>
-			<version>${wxpay-sdk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
