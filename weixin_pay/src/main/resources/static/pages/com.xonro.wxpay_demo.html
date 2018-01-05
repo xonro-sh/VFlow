@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wechat js SDK测试页</title>
+    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.3.4/vue.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="jumbotron jumbotron-fluid">
+    <div id="payOrder" class="container">
+        <button type="button" class="btn btn-primary" v-on:click="placeOrder()">确认预约</button>
+    </div>
+</div>
+</body>
+</html>
+<script src="//res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    new Vue({
+        el:"#payOrder",
+        data:{
+            orderNumber:"201712260010",
+            orderName:"",
+            orderAmount:10,
+            orderDate:"",
+            account:"",
+            state:"",
+            type:"预约理财师",
+            orderAmountAct:"",
+            deductionCredits:0,
+            urlCode: ""
+        },
+        methods:{
+            placeOrder: function () { //统一下单
+                placeOrder(this.type, this.orderNumber, this.orderAmount);
+            },
+            wxpayQrCode: function () { //获取二维码
+                var result = wxpayQrCode(this.type, this.orderNumber, this.orderAmount);
+                this.urlCode =  result.code_url;
+            }
+        }
+    })
+
+    function wxpayQrCode(productType, tradeNo, totalFee) {
+        var result = [];
+        $.ajax({
+            url:"../wechat/payOrder",
+            dataType:"json",
+            type:"POST",
+            data:{
+                productType:productType,//商品类目
+                tradeNo:tradeNo,//订单号
+                totalFee:totalFee,//支付金额，单位为分
+            },
+            success:function (res) {
+                //下单结果判定
+                if (res == null){
+                    alert("下单异常");
+                }else {
+                    if (res.result_code != "SUCCESS"){//业务异常
+                        alert("微信下单失败，错误码："+res.err_code+",错误信息："+res.err_code_des);
+                    }else {//下单成功，发起支付
+                        result = res;
+                    }
+                }
+            },
+            error:function (res) {
+                console.log(res);
+                alert("下单异常");
+            }
+        });
+    }
+    /**
+     * 微信支付平台下单
+     */
+    function placeOrder(productType, tradeNo, totalFee) {
+        $.ajax({
+            url:"../wechat/payOrder",
+            dataType:"json",
+            type:"POST",
+            data:{
+                productType:productType,//商品类目
+                tradeNo:tradeNo,//订单号
+                totalFee:totalFee,//支付金额，单位为分
+
+            },
+            success:function (res) {
+                //下单结果判定
+                if (res == null){
+                    alert("下单异常");
+                }else {
+                    if (res.result_code != "SUCCESS"){//业务异常
+                        alert("微信下单失败，错误码："+res.err_code+",错误信息："+res.err_code_des);
+                    }else {//下单成功，发起支付
+                        executePay(res.prepay_id);
+                    }
+                }
+            },
+            error:function (res) {
+                console.log(res);
+                alert("下单异常");
+            }
+        });
+    }
+
+    /**
+     * 发起微信支付
+     * @param prepay_id 统一下单接口响应的预处理id
+     */
+    function executePay(prepay_id) {
+        $.ajax({
+            url:"../wechat/getPaySign/"+prepay_id,
+            dataType:"json",
+            type:"POST",
+            async:false,
+            success:function (res) {
+                doWechatPay(res);
+            },
+            error:function (res) {
+                console.log(res);
+            }
+        });
+    }
+
+    function doWechatPay(payDatas) {
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId":payDatas.appId,     //公众号名称，由商户传入
+                    "timeStamp":payDatas.timeStamp,         //时间戳，自1970年以来的秒数
+                    "nonceStr":payDatas.nonceStr, //随机串
+                    "package":payDatas.package,
+                    "signType":"MD5",         //微信签名方式：
+                    "paySign":payDatas.paySign //微信签名
+                },
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) { // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+
+                    }
+                }
+        );
+    }
+
+</script>

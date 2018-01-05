@@ -7,12 +7,14 @@ import com.github.wxpay.sdk.WXPayUtil;
 import com.xonro.weixinpay.bean.*;
 import com.xonro.weixinpay.enums.WechatEnum;
 import com.xonro.weixinpay.exception.WxPayException;
+import com.xonro.weixinpay.helper.AesHelper;
 import com.xonro.weixinpay.service.PayService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -30,6 +32,12 @@ public class PayServiceImpl implements PayService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private WXPayConfig wxPayConfig;
+
+    /**
+     * 商户号支付key
+     */
+    @Value("${wechat.pay.key}")
+    private String payKey;
     /**
      * 统一下单
      * @param body 商品描述
@@ -278,6 +286,68 @@ public class PayServiceImpl implements PayService {
         return "";
     }
 
+    /**
+     * 微信退款结果通知
+     *
+     * @param notifyData 退款结果
+     * @return 退款结果
+     */
+    @Override
+    public String refundNotify(String notifyData) {
+        WxPayException result = new WxPayException();
+        WXPay wxPay = new WXPay(wxPayConfig);
+        AesHelper aesHelper = new AesHelper();
+        try {
+            Map<String,String> notifyMap = WXPayUtil.xmlToMap(notifyData);
+            //签名校验通过
+            if (wxPay.isPayResultNotifySignatureValid(notifyMap)){
+                //获取加密信息
+                String reqInfo = notifyMap.get("req_info");
+                String reqInfoDecode = aesHelper.decryptData(reqInfo, payKey);
+                Map<String, String> refundMap = WXPayUtil.xmlToMap(reqInfoDecode);
+                //退款状态
+                String resultCode = refundMap.get("refund_status");
+                if (StringUtils.isNotEmpty(resultCode) && WechatEnum.RETURN_CODE_SUCCESS.getValue().equals(resultCode)){
+                    return "";
+
+                }else {//业务错误
+                    logger.error("微信退款出现业务错误，微信退款通知数据："+notifyData,new Throwable("wxPay refund result error,err_code:"+notifyMap.get("err_code")));
+                }
+                Map<String,String> resultMap = BeanUtils.describe(result);
+                resultMap.remove("class");
+                return WXPayUtil.mapToXml(resultMap);
+            }else {
+                logger.error("微信退款结果通知签名校验失败，退款通知数据："+notifyData,new Throwable("wxPay refund notify sign error"));
+                return WXPayUtil.mapToXml(BeanUtils.describe(new WxPayException("001","签名失败")));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return "";
+    }
+
+    /**
+     * 交易保障
+     *
+     * @param reportRequestParam 交易保障请求参数模型
+     * @return 返回结果
+     */
+    @Override
+    public ReportResult report(ReportRequestParam reportRequestParam) {
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        try {
+            Map<String, String> p = new Report().getReport(reportRequestParam);
+            Map<String, String> resData = wxPay.report(p);
+            if (validateWxPayResult(resData)){
+                ReportResult result = new ReportResult();
+                BeanUtils.populate(result,resData);
+                return result;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
 
     /**
      * 校验微信支付接口响应是否正确

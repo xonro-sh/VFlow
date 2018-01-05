@@ -25,6 +25,9 @@ public class WxPayConfImpl implements WXPayConfig{
     @Value("${wechat.pay.mch_id}")
     private String mchId;
 
+    /**
+     * 商户号支付key
+     */
     @Value("${wechat.pay.key}")
     private String payKey;
 
