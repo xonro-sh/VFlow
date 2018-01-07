@@ -102,4 +102,18 @@ public interface PayService {
      * @return 支付结果
      */
     String payNotify(String notifyData);
+
+    /**
+     * 微信退款结果通知
+     * @param notifyData 退款结果
+     * @return 退款结果
+     */
+    String refundNotify(String notifyData);
+
+    /**
+     * 交易保障
+     * @param reportRequestParam 交易保障请求参数模型
+     * @return 返回结果
+     */
+    ReportResult report(ReportRequestParam reportRequestParam);
 }
