@@ -16,6 +16,8 @@ public enum WechatEnums {
     MSG_TYPE_IMAGE("image","图片消息"),
     MSG_TYPE_VOICE("voice","语音消息"),
     MSG_TYPE_VIDEO("video","视频消息"),
+    MSG_TYPE_MUSIC("music","音乐消息"),
+    MSG_TYPE_NEWS("news","图文消息"),
     MSG_TYPE_LINK("link","链接消息"),
     MSG_TYPE_EVENT("event","事件推送"),
 

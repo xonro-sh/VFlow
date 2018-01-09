@@ -1,6 +1,8 @@
 package com.xonro.serviceno.bean;
 
+
 /**
+ * 微信身份凭证模型
  * @author Alex
  * @date 2018/1/8
  */
@@ -18,11 +20,6 @@ public class WechatAccessToken {
      */
     private Long accessTimestamp;
 
-    public WechatAccessToken(String accessToken, Long expiresIn, Long accessTimestamp) {
-        this.accessToken = accessToken;
-        this.expiresIn = expiresIn;
-        this.accessTimestamp = accessTimestamp;
-    }
 
     public String getAccessToken() {
         return accessToken;

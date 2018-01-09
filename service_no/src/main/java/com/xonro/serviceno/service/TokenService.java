@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  * 凭证相关业务服务接口
- * @author louie
+ * @author louie modified by Alex
  * @date 2018-1-3
  */
 public interface TokenService {

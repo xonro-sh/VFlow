@@ -81,7 +81,6 @@ public class TokenServiceImpl implements TokenService{
         tokenCache = token;
     }
 
-
     @Override
     public WechatAccessToken getAccessToken() throws IOException {
         String url = urlBuilder.buildGetTokenUrl();
@@ -91,6 +90,7 @@ public class TokenServiceImpl implements TokenService{
             cacheToken(token);
             return token;
         } catch (IOException e) {
+
             logger.error(e.getMessage(),e);
             throw e;
         }
