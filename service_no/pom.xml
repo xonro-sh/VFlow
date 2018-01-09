@@ -25,6 +25,8 @@
 		<commons-codec.version>1.10</commons-codec.version>
 		<fastjson.version>1.2.35</fastjson.version>
 		<httpclient.version>4.5.2</httpclient.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
+        <xstream.version>1.4.10</xstream.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +72,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>${xstream.version}</version>
 		</dependency>
 	</dependencies>
 
