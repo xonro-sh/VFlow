@@ -10,6 +10,7 @@ public enum WechatEnums {
     URL_QRCODE_CREATE("https://api.weixin.qq.com/cgi-bin/qrcode/create?","临时二维码请求"),
     URL_OAUTHOR_TOKEN("https://api.weixin.qq.com/sns/oauth2/access_token?","通过code换取网页授权access_token"),
     URL_JSAPI_TICKET("https://api.weixin.qq.com/cgi-bin/ticket/getticket?","获取jsapi_ticket"),
+    URL_CUSTOMSERVICE_ADD("https://api.weixin.qq.com/customservice/kfaccount/add?","添加客服账号请求"),
 
     /**消息类型常量枚举*/
     MSG_TYPE_TEXT("text","文本消息"),

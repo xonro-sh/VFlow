@@ -33,31 +33,10 @@ public class WechatMessage {
     /**
      * 通过素材管理中的接口上传多媒体文件，得到的id。
      */
-    private String mediaId;
-    /**
-     * 标题
-     */
-    private String title;
-    /**
-     * 描述
-     */
-    private String description;
-    /**
-     * 音乐链接
-     */
-    private String musicURL;
-    /**
-     * 高质量音乐链接，WIFI环境优先使用该链接播放音乐
-     */
-    private String hQMusicUrl;
-    /**
-     * 缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id
-     */
-    private String thumbMediaId;
     /**
      * 图文消息个数，限制为8条以内
      */
-    private String ArticleCount;
+    private String articleCount;
 
     public WechatMessage() {
     }
@@ -76,58 +55,11 @@ public class WechatMessage {
         this.msgType = msgType;
         if (this.msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())) {
             this.content = content;
-        } else if (this.msgType.equals(WechatEnums.MSG_TYPE_NEWS.getValue())) {
-            this.ArticleCount = content;
-        } else {
-            this.mediaId = content;
+        }
+        if (this.msgType.equals(WechatEnums.MSG_TYPE_NEWS.getValue())) {
+            this.articleCount = content;
         }
     }
-
-    /**
-     * 视频消息
-     * @param toUserName 接收方帐号（收到的OpenID）
-     * @param fromUserName	开发者微信号
-     * @param createTime 	消息创建时间 （整型）
-     * @param msgType 	text
-     * @param mediaId 通过素材管理中的接口上传多媒体文件，得到的id
-     * @param title 视频消息的标题
-     * @param description 视频消息的描述
-     */
-    public WechatMessage(String toUserName, String fromUserName, Long createTime, String msgType, String mediaId, String title, String description) {
-        this.toUserName = toUserName;
-        this.fromUserName = fromUserName;
-        this.createTime = createTime;
-        this.msgType = msgType;
-        this.mediaId = mediaId;
-        this.title = title;
-        this.description = description;
-    }
-
-    /**
-     * 音乐消息
-     * @param toUserName 接收方帐号（收到的OpenID）
-     * @param fromUserName	开发者微信号
-     * @param createTime 	消息创建时间 （整型）
-     * @param msgType 	text
-     * @param title 音乐标题
-     * @param description 音乐描述
-     * @param musicURL 音乐链接
-     * @param hQMusicUrl 高质量音乐链接，WIFI环境优先使用该链接播放音乐
-     * @param thumbMediaId 缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id
-     */
-    public WechatMessage(String toUserName, String fromUserName, Long createTime, String msgType, String title, String description, String musicURL, String hQMusicUrl, String thumbMediaId) {
-        this.toUserName = toUserName;
-        this.fromUserName = fromUserName;
-        this.createTime = createTime;
-        this.msgType = msgType;
-        this.title = title;
-        this.description = description;
-        this.musicURL = musicURL;
-        this.hQMusicUrl = hQMusicUrl;
-        this.thumbMediaId = thumbMediaId;
-    }
-
-
 
     public String getToUserName() {
         return toUserName;
@@ -169,59 +101,11 @@ public class WechatMessage {
         this.content = content;
     }
 
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getMusicURL() {
-        return musicURL;
-    }
-
-    public void setMusicURL(String musicURL) {
-        this.musicURL = musicURL;
-    }
-
-    public String gethQMusicUrl() {
-        return hQMusicUrl;
-    }
-
-    public void sethQMusicUrl(String hQMusicUrl) {
-        this.hQMusicUrl = hQMusicUrl;
-    }
-
-    public String getThumbMediaId() {
-        return thumbMediaId;
-    }
-
-    public void setThumbMediaId(String thumbMediaId) {
-        this.thumbMediaId = thumbMediaId;
-    }
-
     public String getArticleCount() {
-        return ArticleCount;
+        return articleCount;
     }
 
     public void setArticleCount(String articleCount) {
-        ArticleCount = articleCount;
+        this.articleCount = articleCount;
     }
 }

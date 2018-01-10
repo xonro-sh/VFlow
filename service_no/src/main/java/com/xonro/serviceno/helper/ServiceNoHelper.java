@@ -2,6 +2,9 @@ package com.xonro.serviceno.helper;
 
 import com.thoughtworks.xstream.XStream;
 import com.xonro.serviceno.bean.WechatArticlesMessage;
+import com.xonro.serviceno.bean.WechatMediaMessage;
+import com.xonro.serviceno.enums.WechatEnums;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -17,10 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Alex
@@ -114,7 +114,7 @@ public class ServiceNoHelper {
         try {
             Map<String, String> xmlMap = xmlToMap(xmlMessage);
             System.err.println(""+xmlMap);
-            Map<String, String> xmlMapNew = new HashMap<>();
+            Map<String, String> xmlMapNew = new LinkedHashMap<>();
             for (String key: xmlMap.keySet()){
                 xmlMapNew.put(captureName(key), xmlMap.get(key));
             }
@@ -133,7 +133,7 @@ public class ServiceNoHelper {
             for (int i = 0; i < articlesMessageList.size(); i++) {
                 WechatArticlesMessage wechatArticlesMessage = articlesMessageList.get(i);
                 String xmlMessage = "<Title><![CDATA["+wechatArticlesMessage.getTitle()+"]]></Title>\n" +
-                        "<Description><![CDATA["+wechatArticlesMessage.getUrl()+"]]></Description>\n" +
+                        "<Description><![CDATA["+wechatArticlesMessage.getDescription()+"]]></Description>\n" +
                         "<PicUrl><![CDATA["+wechatArticlesMessage.getPicUrl()+"]]></PicUrl>\n" +
                         "<Url><![CDATA["+wechatArticlesMessage.getUrl()+"]]></Url>\n";
                 xmlnodes.append("<item>");
@@ -141,11 +141,43 @@ public class ServiceNoHelper {
                 xmlnodes.append("</item>");
             }
             xmlnodes.append("</Articles>");
+            xmlnodes.append("</xml>");
         }
 
         return xmlnodes.toString();
     }
 
+    public static String getExtMessageXml(WechatMediaMessage wechatMediaMessage, String msgType){
+        StringBuffer xmlnodes = new StringBuffer();
+        String xmlMessage = null;
+        if (wechatMediaMessage != null) {
+            xmlnodes.append("<"+captureName(msgType)+">");
+            if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue()) || msgType.equals(WechatEnums.MSG_TYPE_VOICE.getValue())){
+                xmlMessage = "<MediaId><![CDATA["+wechatMediaMessage.getMediaId()+"]]></MediaId>\n";
+
+            } else if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue())) {
+                xmlMessage = "<MediaId><![CDATA["+wechatMediaMessage.getMediaId()+"]]></MediaId>\n" +
+                        "<Title><![CDATA["+wechatMediaMessage.getTitle()+"]]></Title>\n" +
+                        "<Description><![CDATA["+wechatMediaMessage.getDescription()+"]]></Description>\n";
+            } else if(msgType.equals(WechatEnums.MSG_TYPE_MUSIC.getValue())){
+                xmlMessage = "<Title><![CDATA["+wechatMediaMessage.getTitle()+"]]></Title>\n" +
+                        "<Description><![CDATA["+wechatMediaMessage.getDescription()+"]]></Description>\n" +
+                        "<MusicUrl><![CDATA["+wechatMediaMessage.getMusicUrl()+"]]></MusicUrl>\n" +
+                        "<HQMusicUrl><![CDATA["+wechatMediaMessage.gethQMusicUrl()+"]]></HQMusicUrl>\n" +
+                        "<ThumbMediaId><![CDATA["+wechatMediaMessage.getThumbMediaId()+"]]></ThumbMediaId>\n";
+            } else {
+                xmlMessage = null;
+            }
+            xmlnodes.append(xmlMessage);
+            xmlnodes.append("</"+captureName(msgType)+">\n");
+            xmlnodes.append("</xml>");
+        }
+
+        return xmlMessage==null?null:xmlnodes.toString();
+
+
+
+    }
     /**
      * 首字母大写
      * @param name 字段

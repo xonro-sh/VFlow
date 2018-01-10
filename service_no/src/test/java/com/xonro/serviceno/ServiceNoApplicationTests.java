@@ -4,6 +4,7 @@ import com.xonro.serviceno.bean.WechatArticlesMessage;
 import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
+import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.service.TokenService;
 import org.assertj.core.util.Compatibility;
 import org.junit.Assert;
@@ -33,6 +34,8 @@ public class ServiceNoApplicationTests {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private CustomService customService;
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -56,6 +59,7 @@ public class ServiceNoApplicationTests {
 
     @Test
     public void testWechatMessage(){
+        customService.addCustom();
 //        WechatMessage wechatMessage = new WechatMessage();
 //        WechatArticlesMessage wechatArticlesMessage = new WechatArticlesMessage();
 //        WechatArticlesMessage wechatArticlesMessage1 = new WechatArticlesMessage();

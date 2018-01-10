@@ -37,4 +37,12 @@ public class UrlBuilder {
     public String buildJsApiTicketUrl(){
         return WechatEnums.URL_JSAPI_TICKET.getValue()+"access_token="+tokenService.getTokenFromCache()+"&type=jsapi";
     }
+
+    /**
+     * 构建添加客服账号的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildCustomServiceAdd(){
+        return WechatEnums.URL_CUSTOMSERVICE_ADD.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
 }
