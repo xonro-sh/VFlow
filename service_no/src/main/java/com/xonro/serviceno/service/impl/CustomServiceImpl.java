@@ -1,16 +1,26 @@
 package com.xonro.serviceno.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.xonro.serviceno.bean.CustomServiceResult;
+import com.xonro.serviceno.bean.custom.CustomArticlesMessage;
+import com.xonro.serviceno.bean.custom.CustomInfo;
+import com.xonro.serviceno.bean.custom.CustomMessageMain;
+import com.xonro.serviceno.bean.custom.CustomServiceResult;
+import com.xonro.serviceno.bean.RedisConn;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.web.RequestExecutor;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alex
@@ -21,13 +31,20 @@ public class CustomServiceImpl implements CustomService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UrlBuilder urlBuilder;
+    /**
+     * 增加增加账号 最多能有100个客服
+     * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
+     * @param nickName 客服昵称
+     * @param password 客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @return 增加客服是否成功
+     */
     @Override
-    public CustomServiceResult addCustom() {
+    public CustomServiceResult addCustom(String kfAccount, String nickName, String password) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("kf_account", "test1@test");
-        jsonObject.put("nickname", "客服1");
-        jsonObject.put("password", "123456");
-        CustomServiceResult customServiceResult = null;
+        jsonObject.put("kf_account", kfAccount);
+        jsonObject.put("nickname", nickName);
+        jsonObject.put("password", StringUtils.isEmpty(password)?"": DigestUtils.md5Hex(password));
+        CustomServiceResult customServiceResult;
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceAdd()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
             return customServiceResult;
@@ -36,4 +53,122 @@ public class CustomServiceImpl implements CustomService{
         }
        return null;
     }
+
+    /**
+     * 修改客服账号
+     *
+     * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
+     * @param nickName  客服昵称
+     * @param password  客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @return 修改客服是否成功
+     */
+    @Override
+    public CustomServiceResult updateCustom(@NotNull String kfAccount, @NotNull String nickName, String password) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("kf_account", kfAccount);
+        jsonObject.put("nickname", nickName);
+        jsonObject.put("password", StringUtils.isEmpty(password)?"": DigestUtils.md5Hex(password));
+        CustomServiceResult customServiceResult;
+        try {
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
+            return customServiceResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 删除客服账号
+     *
+     * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
+     * @param nickName  客服昵称
+     * @param password  客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @return 删除客服是否成功
+     */
+    @Override
+    public CustomServiceResult delCustom(@NotNull String kfAccount,String nickName, String password) {
+        CustomServiceResult customServiceResult;
+        try {
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceDel(kfAccount, nickName, password)).executeGetRequest(CustomServiceResult.class);
+            return customServiceResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 设置客服账号的头像
+     *
+     * @param filePath     文件路径
+     * @param title        标题
+     * @param introduction 描述
+     * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
+     * @return 是否成功
+     */
+    @Override
+    public CustomServiceResult uploadHeadImg(String filePath, String title, String introduction, String kfAccount) {
+        CustomServiceResult customServiceResult;
+        customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceHeadImg(kfAccount)).postFile(filePath,title ,introduction,CustomServiceResult.class);
+        return customServiceResult;
+    }
+
+    /**
+     * 获取所有客服账号
+     * @return 所有客服账号对象
+     */
+    @Override
+    public List<CustomInfo> getKfList() {
+        String result;
+        try {
+            result = new RequestExecutor(urlBuilder.buildGetKfList()).executeGetRequest();
+            JSONObject json = JSON.parseObject(result);
+            return JSON.parseArray(json.getString("kf_list"), CustomInfo.class);
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 客服发消息
+     *
+     * @param customMessageMain 消息信息（bean）
+     * @return 消息是否发送成功
+     */
+    @Override
+    public CustomServiceResult customSend(CustomMessageMain customMessageMain) {
+        CustomServiceResult customServiceResult;
+        try {
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomSend()).executePostRequest(JSON.toJSONString(customMessageMain),CustomServiceResult.class);
+            return customServiceResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 客服输入状态
+     *
+     * @param toUser 普通用户（openid）
+     * @param typing "Typing"：对用户下发“正在输入"状态 "CancelTyping"：取消对用户的”正在输入"状态
+     * @return 是否成功
+     */
+    @Override
+    public CustomServiceResult customTyping(String toUser, String typing) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("touser", toUser);
+        jsonObject.put("command", typing);
+        CustomServiceResult customServiceResult;
+        try {
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
+            return customServiceResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
 }
