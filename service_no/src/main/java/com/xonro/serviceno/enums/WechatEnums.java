@@ -11,6 +11,12 @@ public enum WechatEnums {
     URL_OAUTHOR_TOKEN("https://api.weixin.qq.com/sns/oauth2/access_token?","通过code换取网页授权access_token"),
     URL_JSAPI_TICKET("https://api.weixin.qq.com/cgi-bin/ticket/getticket?","获取jsapi_ticket"),
     URL_CUSTOMSERVICE_ADD("https://api.weixin.qq.com/customservice/kfaccount/add?","添加客服账号请求"),
+    URL_CUSTOMSERVICE_UPDATE("https://api.weixin.qq.com/customservice/kfaccount/update?","修改客服账号请求"),
+    URL_CUSTOMSERVICE_DEL("https://api.weixin.qq.com/customservice/kfaccount/del?","删除客服账号请求"),
+    URL_CUSTOMSERVICE_UPLOADHEADIMG("https://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?","设置客服帐号的头像请求"),
+    URL_CUSTOMSERVICE_GETKFLIST("https://api.weixin.qq.com/cgi-bin/customservice/getkflist?","获取所有的客服请求"),
+    URL_CUSTOMSERVICE_SEND("https://api.weixin.qq.com/cgi-bin/message/custom/send?","客服接口-发消息请求"),
+    URL_CUSTOMSERVICE_TYPING("https://api.weixin.qq.com/cgi-bin/message/custom/typing?","客服输入状态请求"),
 
     /**消息类型常量枚举*/
     MSG_TYPE_TEXT("text","文本消息"),
@@ -19,8 +25,13 @@ public enum WechatEnums {
     MSG_TYPE_VIDEO("video","视频消息"),
     MSG_TYPE_MUSIC("music","音乐消息"),
     MSG_TYPE_NEWS("news","图文消息"),
+    MSG_TYPE_MPNEWS("mpnews","图文消息(点击跳转到图文消息页面)"),
+    MSG_TYPE_WXCARD("wxcard","卡券消息"),
+    MSG_TYPE_MINIPROGRAMPAGE("miniprogrampage","小程序卡片消息"),
     MSG_TYPE_LINK("link","链接消息"),
     MSG_TYPE_EVENT("event","事件推送"),
+    MSG_TYPE_TYPING("Typing","对用户下发”正在输入“状态 "),
+    MSG_TYPE_CANCELTYPING("CancelTyping","取消对用户的”正在输入“状态"),
 
     /**事件类型常量枚举*/
     EVENT_SUBSCRIBE("subscribe","订阅"),
