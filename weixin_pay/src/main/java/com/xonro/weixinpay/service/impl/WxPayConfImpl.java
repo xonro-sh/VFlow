@@ -16,7 +16,7 @@ public class WxPayConfImpl implements WXPayConfig{
     /**
      * 公众账号ID
      */
-    @Value("${wechat.appID}")
+    @Value("${wechat.appId}")
     private String appId;
 
     /**
