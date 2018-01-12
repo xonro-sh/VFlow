@@ -2,6 +2,7 @@ package com.xonro.serviceno.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xonro.serviceno.exception.WechatException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -43,7 +44,7 @@ public class RequestExecutor {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    public <T>T executeGetRequest(Class<T> tClass) throws IOException {
+    public <T>T executeGetRequest(Class<T> tClass) throws WechatException, IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         try {
@@ -67,6 +68,9 @@ public class RequestExecutor {
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
             throw e;
+        }catch (WechatException e){
+            logger.error(e.getMessage(),e);
+            throw e;
         }finally {
             if (response != null){
                 response.close();
@@ -81,7 +85,7 @@ public class RequestExecutor {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    public String executeGetRequest() throws IOException {
+    public String executeGetRequest() throws IOException, WechatException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
         try {
@@ -105,6 +109,9 @@ public class RequestExecutor {
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
             throw e;
+        }catch (WechatException e){
+            logger.error(e.getMessage(),e);
+            throw e;
         }finally {
             if (response != null){
                 response.close();
@@ -122,7 +129,7 @@ public class RequestExecutor {
      * @return 请求结果
      * @throws IOException IO异常
      */
-    public <T>T executePostRequest(String requestData,Class<T> tClass) throws IOException {
+    public <T>T executePostRequest(String requestData,Class<T> tClass) throws IOException, WechatException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
 
@@ -151,6 +158,9 @@ public class RequestExecutor {
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
             throw e;
+        }catch (WechatException e){
+            logger.error(e.getMessage(),e);
+            throw e;
         }finally {
             if (response != null){
                 response.close();
@@ -165,14 +175,14 @@ public class RequestExecutor {
      * @param result 微信的响应信息
      * @return true正确相应 false响应失败
      */
-    private boolean validateResult(String result){
+    private boolean validateResult(String result) throws WechatException {
         JSONObject jObject = JSONObject.parseObject(result);
         String errcode = jObject.getString("errcode");
         if (StringUtils.isEmpty(errcode) || "0".equals(errcode.trim())){
             return true;
         }
         logger.error("访问微信失败，url："+requestUrl+",错误信息："+result);
-        return false;
+        throw new WechatException(errcode,jObject.getString("errmsg"));
     }
 
     public <T>T postFile(String filePath,
@@ -230,9 +240,4 @@ public class RequestExecutor {
         return JSON.parseObject(result,tClass);
     }
 
-//    public static void main(String[] args) {
-//        String url = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token="
-//                + "U_0AIUrkfmVk0LXlaGu0lx5CXx-_4&type=video";
-//        postFile(url, "/Users/jlusoft/Desktop/test.mp4","test","dfd");
-//    }
 }
