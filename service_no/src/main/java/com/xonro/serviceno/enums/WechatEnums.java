@@ -17,12 +17,14 @@ public enum WechatEnums {
     URL_CUSTOMSERVICE_GETKFLIST("https://api.weixin.qq.com/cgi-bin/customservice/getkflist?","获取所有的客服请求"),
     URL_CUSTOMSERVICE_SEND("https://api.weixin.qq.com/cgi-bin/message/custom/send?","客服接口-发消息请求"),
     URL_CUSTOMSERVICE_TYPING("https://api.weixin.qq.com/cgi-bin/message/custom/typing?","客服输入状态请求"),
+    URL_MASSMESSAGE_SENDALL("https://api.weixin.qq.com/cgi-bin/message/mass/sendall?","根据标签进行群发"),
 
     /**消息类型常量枚举*/
     MSG_TYPE_TEXT("text","文本消息"),
     MSG_TYPE_IMAGE("image","图片消息"),
     MSG_TYPE_VOICE("voice","语音消息"),
     MSG_TYPE_VIDEO("video","视频消息"),
+    MSG_TYPE_MPVIDEO("mpvideo","视频消息(群发)"),
     MSG_TYPE_MUSIC("music","音乐消息"),
     MSG_TYPE_NEWS("news","图文消息"),
     MSG_TYPE_MPNEWS("mpnews","图文消息(点击跳转到图文消息页面)"),

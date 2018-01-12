@@ -1,0 +1,98 @@
+package com.xonro.serviceno.service.impl;
+
+import com.alibaba.fastjson.JSON;
+import com.xonro.serviceno.bean.custom.CustomServiceResult;
+import com.xonro.serviceno.bean.massmessage.MassMessageResult;
+import com.xonro.serviceno.enums.WechatEnums;
+import com.xonro.serviceno.helper.UrlBuilder;
+import com.xonro.serviceno.service.MassMessageService;
+import com.xonro.serviceno.web.RequestExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * @author Alex
+ * @date 2018/1/12
+ */
+@Service
+public class MassMessageServiceImpl implements MassMessageService{
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private UrlBuilder urlBuilder;
+    /**
+     * 群发消息(图文消息)
+     *
+     * @param isToAll           用于设定是否向全部用户发送，值为true或false，选择true该消息群发给所有用户，选择false可根据tag_id发送给指定群组的用户
+     * @param tagId             群发到的标签的tag_id，参加用户管理中用户分组接口，若is_to_all值为true，可不填写tag_id
+     * @param mediaId           用于群发的消息的media_id
+     * @param msgType           群发的消息类型，图文消息为mpnew
+     * @param sendIgnoreReprint 图文消息被判定为转载时，是否继续群发。 1为继续群发（转载），0为停止群发。 该参数默认为0。
+     * @return 群发结果
+     */
+    @Override
+    public MassMessageResult sendAll(boolean isToAll, String tagId, String mediaId, String msgType, Integer sendIgnoreReprint) {
+        //提交的参数
+        Map<String, Object> filterParams = new HashMap<>(2);
+        filterParams.put("is_to_all", false);
+        filterParams.put("tag_id", tagId);
+        Map<String, Object> mpnewsParams = new HashMap<>(1);
+        mpnewsParams.put("media_id", mediaId);
+        TreeMap<String,Object> dataParams = new TreeMap<>();
+        dataParams.put("filter", filterParams);
+        dataParams.put("mpnews", mpnewsParams);
+        dataParams.put("msgtype", msgType);
+        dataParams.put("send_ignore_reprint", sendIgnoreReprint);
+        MassMessageResult massMessageResult;
+        try {
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            return massMessageResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 群发消息(其他)
+     *
+     * @param isToAll 用于设定是否向全部用户发送，值为true或false，选择true该消息群发给所有用户，选择false可根据tag_id发送给指定群组的用户
+     * @param tagId   群发到的标签的tag_id，参加用户管理中用户分组接口，若is_to_all值为true，可不填写tag_id
+     * @param content 内容 也可为mediaId wxcardId
+     * @param msgType 群发的消息类型，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+     * @return 群发结果
+     */
+    @Override
+    public MassMessageResult sendAll(boolean isToAll, String tagId, String content, String msgType) {
+        //提交的参数
+        Map<String, Object> filterParams = new HashMap<>(2);
+        filterParams.put("is_to_all", false);
+        filterParams.put("tag_id", tagId);
+        Map<String, Object> mpnewsParams = new HashMap<>(1);
+        if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
+            mpnewsParams.put("content", content);
+        } else if (msgType.equals(WechatEnums.MSG_TYPE_WXCARD.getValue())) {
+            mpnewsParams.put("card_id", content);
+        } else {
+            mpnewsParams.put("media_id", content);
+        }
+        TreeMap<String,Object> dataParams = new TreeMap<>();
+        dataParams.put("filter", filterParams);
+        dataParams.put(msgType, mpnewsParams);
+        dataParams.put("msgtype", msgType);
+        MassMessageResult massMessageResult;
+        try {
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            return massMessageResult;
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+}

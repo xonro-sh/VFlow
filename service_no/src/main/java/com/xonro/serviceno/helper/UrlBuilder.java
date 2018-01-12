@@ -90,7 +90,19 @@ public class UrlBuilder {
         return WechatEnums.URL_CUSTOMSERVICE_SEND.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
 
+    /**
+     * 客服输入状态的请求url
+     * @return 构建完成的请求url
+     */
     public String buildCustomTyping(){
         return WechatEnums.URL_CUSTOMSERVICE_TYPING.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建根据标签进行群发的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildSendAllByTag(){
+        return WechatEnums.URL_MASSMESSAGE_SENDALL.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
 }

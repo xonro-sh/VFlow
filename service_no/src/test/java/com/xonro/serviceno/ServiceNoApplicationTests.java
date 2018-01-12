@@ -5,6 +5,7 @@ import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.CustomService;
+import com.xonro.serviceno.service.MassMessageService;
 import com.xonro.serviceno.service.TokenService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,9 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private CustomService customService;
+
+    @Autowired
+    private MassMessageService massMessageService;
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -124,4 +128,9 @@ public class ServiceNoApplicationTests {
 //        System.err.println(JSON.toJSONString(customMessageMain));
     }
 
+    @Test
+    public void testMassMessage(){
+//        massMessageService.sendAll(true, "111", "222", "mpnews", 0);
+        massMessageService.sendAll(true, "", "svIC4Fs2c9wDw63VPmE5BSkSnJRsGiMm8oF6JDraRFDASpp-yNQf2d3XPINy6b-8", "mpvideo");
+    }
 }

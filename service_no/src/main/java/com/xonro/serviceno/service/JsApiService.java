@@ -6,6 +6,7 @@ import com.xonro.serviceno.bean.WechatJsSignature;
 import java.io.IOException;
 
 /**
+ * jsapi相关业务接口
  * @author Alex
  * @date 2018/1/9
  */
