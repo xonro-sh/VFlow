@@ -48,7 +48,7 @@ public class CustomServiceImpl implements CustomService{
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceAdd()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
             return customServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
        return null;
@@ -72,7 +72,7 @@ public class CustomServiceImpl implements CustomService{
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
             return customServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -92,7 +92,7 @@ public class CustomServiceImpl implements CustomService{
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceDel(kfAccount, nickName, password)).executeGetRequest(CustomServiceResult.class);
             return customServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -125,7 +125,7 @@ public class CustomServiceImpl implements CustomService{
             result = new RequestExecutor(urlBuilder.buildGetKfList()).executeGetRequest();
             JSONObject json = JSON.parseObject(result);
             return JSON.parseArray(json.getString("kf_list"), CustomInfo.class);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -143,7 +143,7 @@ public class CustomServiceImpl implements CustomService{
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomSend()).executePostRequest(JSON.toJSONString(customMessageMain),CustomServiceResult.class);
             return customServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -165,7 +165,7 @@ public class CustomServiceImpl implements CustomService{
         try {
             customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
             return customServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;

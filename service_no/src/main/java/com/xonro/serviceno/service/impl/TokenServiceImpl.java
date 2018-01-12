@@ -1,6 +1,7 @@
 package com.xonro.serviceno.service.impl;
 
 import com.xonro.serviceno.bean.WechatAccessToken;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.web.RequestExecutor;
@@ -70,7 +71,7 @@ public class TokenServiceImpl implements TokenService{
             }else {
                 return tokenCache.getAccessToken();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -82,7 +83,7 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @Override
-    public WechatAccessToken getAccessToken() throws IOException {
+    public WechatAccessToken getAccessToken() throws IOException, WechatException {
         String url = urlBuilder.buildGetTokenUrl();
         try {
             WechatAccessToken token = new RequestExecutor(url).executeGetRequest(WechatAccessToken.class);
@@ -90,7 +91,9 @@ public class TokenServiceImpl implements TokenService{
             cacheToken(token);
             return token;
         } catch (IOException e) {
-
+            logger.error(e.getMessage(),e);
+            throw e;
+        }catch (WechatException e){
             logger.error(e.getMessage(),e);
             throw e;
         }

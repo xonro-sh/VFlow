@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.net.InetAddress;
-import java.sql.Timestamp;
 import java.util.Map;
 
 /**

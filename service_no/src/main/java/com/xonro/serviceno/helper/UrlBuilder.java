@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UrlBuilder {
-    @Value("${wechat.appID}")
-    private String appID;
+    @Value("${wechat.appId}")
+    private String appId;
 
     @Value("${wechat.appSecret}")
     private String appSecret;
@@ -23,11 +23,11 @@ public class UrlBuilder {
     TokenService tokenService;
 
     /**
-     * 构架获取accessTocken的请求url
+     * 构建获取accessTocken的请求url
      * @return 构建完成的请求url
      */
     public String buildGetTokenUrl(){
-        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ appID+"&secret="+appSecret;
+        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ appId +"&secret="+appSecret;
     }
 
     /**
@@ -96,6 +96,25 @@ public class UrlBuilder {
      */
     public String buildCustomTyping(){
         return WechatEnums.URL_CUSTOMSERVICE_TYPING.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取用户信息请求url
+     * @param openId 普通用户的标识，对当前公众号唯一
+     * @return
+     */
+    public String buildUserInfoUrl(String openId){
+        return WechatEnums.URL_USER_INFO.getValue()+"access_token="+tokenService.getTokenFromCache()+"&openid="+openId+"&lang=zh_CN";
+    }
+
+    /**
+     * 构建获取用户信息请求url
+     * @param openId 普通用户的标识，对当前公众号唯一
+     * @param lang 国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
+     * @return
+     */
+    public String buildUserInfoUrl(String openId,String lang){
+        return WechatEnums.URL_USER_INFO.getValue()+"access_token="+tokenService.getTokenFromCache()+"&openid="+openId+"&lang="+lang;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.xonro.serviceno.service;
 
 import com.xonro.serviceno.bean.WechatAccessToken;
+import com.xonro.serviceno.exception.WechatException;
 
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public interface TokenService {
      * @return WechatAccessToken 对象
      * @throws IOException IO异常
      */
-    WechatAccessToken getAccessToken() throws IOException;
+    WechatAccessToken getAccessToken() throws IOException, WechatException;
 
     /**
      * 获取缓存的微信身份凭证

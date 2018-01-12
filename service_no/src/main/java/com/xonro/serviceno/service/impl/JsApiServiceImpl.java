@@ -2,6 +2,7 @@ package com.xonro.serviceno.service.impl;
 
 import com.xonro.serviceno.bean.WechatJsApiTicket;
 import com.xonro.serviceno.bean.WechatJsSignature;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.JsApiService;
 import com.xonro.serviceno.web.RequestExecutor;
@@ -34,11 +35,16 @@ public class JsApiServiceImpl implements JsApiService {
      * @return  jsapi_ticket
      */
     @Override
-    public WechatJsApiTicket getJsApiTicket() throws IOException {
+    public WechatJsApiTicket getJsApiTicket() throws IOException, WechatException {
         String url = urlBuilder.buildJsApiTicketUrl();
-        jsApiTicket = new RequestExecutor(url).executeGetRequest(WechatJsApiTicket.class);
-        jsApiTicket.setAccessTime(System.currentTimeMillis()/1000);
-        return jsApiTicket;
+        try {
+            jsApiTicket = new RequestExecutor(url).executeGetRequest(WechatJsApiTicket.class);
+            jsApiTicket.setAccessTime(System.currentTimeMillis()/1000);
+            return jsApiTicket;
+        } catch (WechatException e) {
+           logger.error(e.getMessage(),e);
+           throw e;
+        }
     }
 
     /**
@@ -47,7 +53,7 @@ public class JsApiServiceImpl implements JsApiService {
      * @throws IOException io异常
      */
     @Override
-    public String getJsApiTicketFromCache() throws IOException {
+    public String getJsApiTicketFromCache() throws IOException,WechatException {
         if(jsApiTicket == null){
             return getJsApiTicket().getTicket();
         }
@@ -62,7 +68,7 @@ public class JsApiServiceImpl implements JsApiService {
         }
     }
 
-    @Value("${wechat.appID}")
+    @Value("${wechat.appId}")
     private String appId;
 
     /**
@@ -91,7 +97,7 @@ public class JsApiServiceImpl implements JsApiService {
             jsSignature.setTimestamp(timestamp);
 
             return jsSignature;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
         return null;
