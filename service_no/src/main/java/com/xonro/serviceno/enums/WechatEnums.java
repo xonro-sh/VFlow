@@ -18,6 +18,7 @@ public enum WechatEnums {
     URL_CUSTOMSERVICE_SEND("https://api.weixin.qq.com/cgi-bin/message/custom/send?","客服接口-发消息请求"),
     URL_CUSTOMSERVICE_TYPING("https://api.weixin.qq.com/cgi-bin/message/custom/typing?","客服输入状态请求"),
     URL_MASSMESSAGE_SENDALL("https://api.weixin.qq.com/cgi-bin/message/mass/sendall?","根据标签进行群发"),
+    URL_MASSMESSAGE_SENDBYOPENID("https://api.weixin.qq.com/cgi-bin/message/mass/send?","根据openid进行群发"),
     URL_USER_INFO("https://api.weixin.qq.com/cgi-bin/user/info?","通过OpenID来获取用户基本信息"),
 
     /**消息类型常量枚举*/

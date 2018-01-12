@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +111,7 @@ public class CustomServiceImpl implements CustomService{
     @Override
     public CustomServiceResult uploadHeadImg(String filePath, String title, String introduction, String kfAccount) {
         CustomServiceResult customServiceResult;
-        customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceHeadImg(kfAccount)).postFile(filePath,title ,introduction,CustomServiceResult.class);
+        customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceHeadImg(kfAccount)).postFile(new File(filePath),title ,introduction,CustomServiceResult.class);
         return customServiceResult;
     }
 

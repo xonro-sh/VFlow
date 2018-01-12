@@ -124,4 +124,12 @@ public class UrlBuilder {
     public String buildSendAllByTag(){
         return WechatEnums.URL_MASSMESSAGE_SENDALL.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
+
+    /**
+     * 构建根据openid进行群发的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildSendAllByOpenId(){
+        return WechatEnums.URL_MASSMESSAGE_SENDBYOPENID.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
 }

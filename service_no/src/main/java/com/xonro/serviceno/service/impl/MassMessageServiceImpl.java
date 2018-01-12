@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.custom.CustomServiceResult;
 import com.xonro.serviceno.bean.massmessage.MassMessageResult;
 import com.xonro.serviceno.enums.WechatEnums;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.MassMessageService;
 import com.xonro.serviceno.web.RequestExecutor;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,7 +39,7 @@ public class MassMessageServiceImpl implements MassMessageService{
      * @return 群发结果
      */
     @Override
-    public MassMessageResult sendAll(boolean isToAll, String tagId, String mediaId, String msgType, Integer sendIgnoreReprint) {
+    public MassMessageResult sendAllByTagId(boolean isToAll, String tagId, String mediaId, String msgType, Integer sendIgnoreReprint) {
         //提交的参数
         Map<String, Object> filterParams = new HashMap<>(2);
         filterParams.put("is_to_all", false);
@@ -53,7 +55,7 @@ public class MassMessageServiceImpl implements MassMessageService{
         try {
             massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
             return massMessageResult;
-        } catch (IOException e) {
+        } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
         }
         return null;
@@ -69,7 +71,7 @@ public class MassMessageServiceImpl implements MassMessageService{
      * @return 群发结果
      */
     @Override
-    public MassMessageResult sendAll(boolean isToAll, String tagId, String content, String msgType) {
+    public MassMessageResult sendAllByTagId(boolean isToAll, String tagId, String content, String msgType) {
         //提交的参数
         Map<String, Object> filterParams = new HashMap<>(2);
         filterParams.put("is_to_all", false);
@@ -90,9 +92,70 @@ public class MassMessageServiceImpl implements MassMessageService{
         try {
             massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
             return massMessageResult;
-        } catch (IOException e) {
+        } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
         }
         return null;
+    }
+
+    /**
+     * 根据openID列表群发消息（图文消息）
+     *
+     * @param toUser            openID列表
+     * @param sendIgnoreReprint 图文消息被判定为转载时，是否继续群发。 1为继续群发（转载），0为停止群发。 该参数默认为0。
+     * @param mediaId           用于群发的消息的media_id
+     * @return 群发结果
+     */
+    @Override
+    public MassMessageResult sendAllByOpenId(List<String> toUser, Integer sendIgnoreReprint, String mediaId) {
+        //提交的参数
+        Map<String, Object> mpnewsParams = new HashMap<>(1);
+        mpnewsParams.put("media_id", mediaId);
+        TreeMap<String,Object> dataParams = new TreeMap<>();
+        dataParams.put("touser", toUser);
+        dataParams.put("mpnews", mpnewsParams);
+        dataParams.put("msgtype", "mpnews");
+        dataParams.put("send_ignore_reprint", sendIgnoreReprint);
+        MassMessageResult massMessageResult;
+        try {
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            return massMessageResult;
+        } catch (IOException | WechatException e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
+    }
+
+    /**
+     * 根据openID列表群发消息（文本消息，语音消息，图片消息，卡券消息 ）
+     *
+     * @param toUser  openID列表
+     * @param msgType 群发的消息类型，文本消息为text，语音为voice，图片为image，卡券为wxcard
+     * @param content 内容 media_id card_id
+     * @return 群发结果
+     */
+    @Override
+    public MassMessageResult sendAllByOpenId(List<String> toUser, String msgType, String content) throws WechatException {
+        //提交的参数
+        Map<String, Object> mpnewsParams = new HashMap<>(1);
+        if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
+            mpnewsParams.put("content", content);
+        } else if (msgType.equals(WechatEnums.MSG_TYPE_WXCARD.getValue())){
+            mpnewsParams.put("card_id", content);
+        } else if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue()) || msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue())){
+            mpnewsParams.put("media_id", content);
+        }
+        TreeMap<String,Object> dataParams = new TreeMap<>();
+        dataParams.put("touser", toUser);
+        dataParams.put(msgType, mpnewsParams);
+        dataParams.put("msgtype", msgType);
+        MassMessageResult massMessageResult;
+        try {
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            return massMessageResult;
+        } catch (IOException | WechatException e) {
+            logger.error(e.getMessage(),e);
+            throw new WechatException("002", "群发消息失败！");
+        }
     }
 }

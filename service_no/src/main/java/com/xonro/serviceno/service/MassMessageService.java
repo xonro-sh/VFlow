@@ -1,6 +1,9 @@
 package com.xonro.serviceno.service;
 
 import com.xonro.serviceno.bean.massmessage.MassMessageResult;
+import com.xonro.serviceno.exception.WechatException;
+
+import java.util.List;
 
 /**
  * 群发消息业务相关接口
@@ -17,7 +20,7 @@ public interface MassMessageService {
      * @param sendIgnoreReprint 图文消息被判定为转载时，是否继续群发。 1为继续群发（转载），0为停止群发。 该参数默认为0。
      * @return 群发结果
      */
-    MassMessageResult sendAll(boolean isToAll, String tagId, String mediaId, String msgType, Integer sendIgnoreReprint);
+    MassMessageResult sendAllByTagId(boolean isToAll, String tagId, String mediaId, String msgType, Integer sendIgnoreReprint);
 
     /**
      * 群发消息(其他)
@@ -27,5 +30,23 @@ public interface MassMessageService {
      * @param msgType 群发的消息类型，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
      * @return 群发结果
      */
-    MassMessageResult sendAll(boolean isToAll, String tagId, String content, String msgType);
+    MassMessageResult sendAllByTagId(boolean isToAll, String tagId, String content, String msgType);
+
+    /**
+     * 根据openID列表群发消息（图文消息）
+     * @param toUser openID列表
+     * @param sendIgnoreReprint 图文消息被判定为转载时，是否继续群发。 1为继续群发（转载），0为停止群发。 该参数默认为0。
+     * @param mediaId 用于群发的消息的media_id
+     * @return 群发结果
+     */
+    MassMessageResult sendAllByOpenId(List<String> toUser, Integer sendIgnoreReprint, String mediaId);
+
+    /**
+     * 根据openID列表群发消息（文本消息，语音消息，图片消息，卡券消息 ）
+     * @param toUser openID列表
+     * @param msgType  群发的消息类型，文本消息为text，语音为voice，图片为image，卡券为wxcard
+     * @param content 内容 media_id card_id
+     * @return 群发结果
+     */
+    MassMessageResult sendAllByOpenId(List<String> toUser, String msgType, String content) throws WechatException;
 }

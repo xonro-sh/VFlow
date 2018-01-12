@@ -25,12 +25,12 @@ public class CustomMessage {
 
     public CustomMessage() {
     }
-    public CustomMessage(boolean isKf, String kfAccount){
+    CustomMessage(boolean isKf, String kfAccount){
         if (isKf) {
             this.kfAccount = kfAccount;
         }
     }
-    public CustomMessage(String content, String msgType) {
+    CustomMessage(String content, String msgType) {
         if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
             this.content = content;
         } else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue())){
@@ -45,12 +45,25 @@ public class CustomMessage {
 
     }
 
+    /**
+     * 小程序卡片主体信息
+     * @param thumbMediaId 缩略图/小程序卡片图片的媒体ID，小程序卡片图片建议大小为520*416
+     * @param appId 小程序的appid，要求小程序的appid需要与公众号有关联关系
+     * @param pagePath 小程序的页面路径，跟app.json对齐，支持参数，比如pages/index/index?foo=bar
+     */
     public CustomMessage(String thumbMediaId, String appId, String pagePath) {
         this.thumbMediaId = thumbMediaId;
         this.appId = appId;
         this.pagePath = pagePath;
     }
 
+    /**
+     * 视频消息主体信息
+     * @param mediaId 发送的视频消息（点击跳转到图文消息页）的媒体ID
+     * @param thumbMediaId 缩略图图片的媒体ID
+     * @param title 标题
+     * @param description 描述
+     */
     public CustomMessage(String mediaId, String thumbMediaId, String title, String description) {
         this.mediaId = mediaId;
         this.thumbMediaId = thumbMediaId;
@@ -58,6 +71,14 @@ public class CustomMessage {
         this.description = description;
     }
 
+    /**
+     * 音乐消息主体信息
+     * @param thumbMediaId 缩略图图片的媒体ID
+     * @param title 标题
+     * @param description 描述
+     * @param musicUrl 音乐链接
+     * @param hqMusicUrl 高品质音乐链接，wifi环境优先使用该链接播放音乐
+     */
     public CustomMessage(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
         this.thumbMediaId = thumbMediaId;
         this.title = title;
@@ -67,8 +88,11 @@ public class CustomMessage {
     }
 
 
-
-    public CustomMessage(List<CustomArticlesMessage> customArticlesMessages) {
+    /**
+     * 图文消息（点击跳转到外链）
+     * @param customArticlesMessages 多条图文实体
+     */
+    CustomMessage(List<CustomArticlesMessage> customArticlesMessages) {
         this.articles = customArticlesMessages;
     }
 

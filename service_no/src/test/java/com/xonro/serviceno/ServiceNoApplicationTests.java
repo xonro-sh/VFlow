@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -131,6 +132,10 @@ public class ServiceNoApplicationTests {
     @Test
     public void testMassMessage(){
 //        massMessageService.sendAll(true, "111", "222", "mpnews", 0);
-        massMessageService.sendAll(true, "", "svIC4Fs2c9wDw63VPmE5BSkSnJRsGiMm8oF6JDraRFDASpp-yNQf2d3XPINy6b-8", "mpvideo");
+//        massMessageService.sendAllByTagId(true, "", "svIC4Fs2c9wDw63VPmE5BSkSnJRsGiMm8oF6JDraRFDASpp-yNQf2d3XPINy6b-8", "mpvideo");
+        List<String> list = new ArrayList<>();
+        list.add("ov_650birs2W6gNsucJI_ZBXj9CY");
+        list.add("ov_650REgDNUfqiGwL8JbF5Ntsk8");
+        massMessageService.sendAllByOpenId(list, "text", "2ISU_cKchVgMoCS_kC5a3Z46hcrYrN2cU3VImUIK9LKUjB0PeWa5ZjfjO3D4hAWf");
     }
 }
