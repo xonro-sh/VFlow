@@ -1,11 +1,18 @@
 package com.xonro.serviceno.bean.user;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
+
 /**
  * @author louie
  * @date 2018-1-12
  * 用户基本信息
  */
-public class UserInfo {
+@Entity
+@Table(name="xr_wechat_user")
+public class UserInfo implements Serializable{
     /**
      * 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息
      */
@@ -14,6 +21,7 @@ public class UserInfo {
     /**
      * 用户的标识，对当前公众号唯一
      */
+    @Id
     private String openid;
 
     /**

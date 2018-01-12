@@ -17,4 +17,15 @@ public interface UserService {
      */
     public UserInfo getUserInfo(String openId);
 
+    /**
+     * 保存用户信息
+     * @param userInfo 需保存的用户对象，可通过获取用户信息接口获得
+     */
+    public void saveUser(UserInfo userInfo);
+
+    /**
+     * 删除用户
+     * @param userInfo 需删除的用户信息
+     */
+    public void deleteUser(UserInfo userInfo);
 }

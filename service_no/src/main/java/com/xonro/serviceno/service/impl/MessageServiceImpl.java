@@ -30,7 +30,6 @@ public class MessageServiceImpl implements MessageService{
      */
     @Override
     public String parseMessage(String xmlMessage) {
-        logger.error("---------已接收微信事件--------");
         Map<String,String> params;
         try {
             params = ServiceNoHelper.xmlToMap(xmlMessage);

@@ -1,6 +1,7 @@
 package com.xonro.serviceno.service.impl;
 
 import com.xonro.serviceno.bean.user.UserInfo;
+import com.xonro.serviceno.dao.UserRepository;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.UserService;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private UrlBuilder urlBuilder;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public UserInfo getUserInfo(String openId) {
         String url = urlBuilder.buildUserInfoUrl(openId);
@@ -33,6 +37,16 @@ public class UserServiceImpl implements UserService{
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void saveUser(UserInfo userInfo) {
+        userRepository.save(userInfo);
+    }
+
+    @Override
+    public void deleteUser(UserInfo userInfo) {
+        userRepository.delete(userInfo);
     }
 
 }
