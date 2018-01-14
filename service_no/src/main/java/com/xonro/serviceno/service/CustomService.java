@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
+ * 客服业务相关接口
  * 客服消息
  * @author Alex
  * @date 2018/1/10

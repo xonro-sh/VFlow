@@ -12,6 +12,13 @@ public class CustomArticlesMessage {
     private String url;
     private String picurl;
 
+    /**
+     * 图文消息实体
+     * @param title 标题
+     * @param description 描述
+     * @param url 客服消息实体 （视频和音乐消息）
+     * @param picurl 图文消息的图片链接，支持JPG、PNG格式，较好的效果为大图640*320，小图80*80
+     */
     public CustomArticlesMessage(String title, String description, String url, String picurl) {
         this.title = title;
         this.description = description;

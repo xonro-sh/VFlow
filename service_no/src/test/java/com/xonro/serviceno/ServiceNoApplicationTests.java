@@ -6,6 +6,7 @@ import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.CustomService;
+import com.xonro.serviceno.service.MassMessageService;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.service.WechatService;
 import org.apache.commons.io.FileUtils;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -42,14 +44,7 @@ public class ServiceNoApplicationTests {
     private CustomService customService;
 
     @Autowired
-    private WechatService wechatService;
-
-    @Test
-    public void testCreateQrCode() throws IOException {
-        QrCode qrCode = wechatService.createQrCode(1000l, RandomStringUtils.randomAlphanumeric(16));
-        FileUtils.writeByteArrayToFile(new File("qrcode.png"),qrCode.getQrCode());
-    }
-
+    private MassMessageService massMessageService;
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");

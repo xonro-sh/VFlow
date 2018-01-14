@@ -195,9 +195,17 @@ public class RequestExecutor {
         throw new WechatException(errcode,jObject.getString("errmsg"));
     }
 
-    public <T>T postFile(String filePath,
+    /**
+     * 上传文件
+     * @param file 文件
+     * @param title 标题
+     * @param introduction 介绍
+     * @param <T> 泛型
+      * @return 请求结果
+     * @return result
+     */
+    public <T>T postFile(File file,
                                   String title,String introduction, Class<T> tClass) {
-        File file = new File(filePath);
         if(!file.exists()) {
             return null;
         }

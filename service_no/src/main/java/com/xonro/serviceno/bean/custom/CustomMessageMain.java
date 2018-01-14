@@ -24,6 +24,15 @@ public class CustomMessageMain {
     private CustomMessage wxcard;
     private CustomMessage miniprogrampage;
     private CustomMessage customservice;
+
+    /**
+     * 客服消息实体（文本，图片，语音， 多条图文点击跳转到图文消息页面，发送卡券）
+     * @param toUser 普通用户openid
+     * @param msgType 消息类型，文本为text，图片为image，语音为voice，视频消息为video，音乐消息为music，图文消息（点击跳转到外链）为news，图文消息（点击跳转到图文消息页面）为mpnews，卡券为wxcard，小程序为miniprogrampage
+     * @param text 内容或者media_id，card_id
+     * @param isKf 是否客服发消息
+     * @param kfAccount 客服账号
+     */
     public CustomMessageMain(String toUser, String msgType, String text, boolean isKf, String kfAccount) {
 
         if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())) {
@@ -44,6 +53,14 @@ public class CustomMessageMain {
         }
     }
 
+    /**
+     * 客服消息实体 （视频和音乐消息）
+     * @param toUser 普通用户openid
+     * @param msgType 消息类型，文本为text，图片为image，语音为voice，视频消息为video，音乐消息为music，图文消息（点击跳转到外链）为news，图文消息（点击跳转到图文消息页面）为mpnews，卡券为wxcard，小程序为miniprogrampage
+     * @param customMessage 消息内容对象
+     * @param isKf 是否客服发消息
+     * @param kfAccount 客服账号
+     */
     public CustomMessageMain(String toUser, String msgType, CustomMessage customMessage, boolean isKf, String kfAccount) {
         if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue())){
             this.video = customMessage;
@@ -57,6 +74,15 @@ public class CustomMessageMain {
         }
     }
 
+    /**
+     * 客服消息实体 （小程序卡片）
+     * @param toUser 普通用户openid
+     * @param msgType 消息类型，文本为text，图片为image，语音为voice，视频消息为video，音乐消息为music，图文消息（点击跳转到外链）为news，图文消息（点击跳转到图文消息页面）为mpnews，卡券为wxcard，小程序为miniprogrampage
+     * @param customMessage 消息内容对象
+     * @param isKf 是否客服发消息
+     * @param kfAccount 客服账号
+     * @param title 标题
+     */
     public CustomMessageMain(String toUser, String msgType, CustomMessage customMessage, boolean isKf, String kfAccount,String title){
         if (msgType.equals(WechatEnums.MSG_TYPE_MINIPROGRAMPAGE.getValue())){
             this.miniprogrampage = customMessage;
@@ -68,6 +94,15 @@ public class CustomMessageMain {
         }
 
     }
+
+    /**
+     * 客服消息实体 （发送图文消息（点击跳转到外链））
+     * @param toUser 普通用户openid
+     * @param msgType 消息类型，文本为text，图片为image，语音为voice，视频消息为video，音乐消息为music，图文消息（点击跳转到外链）为news，图文消息（点击跳转到图文消息页面）为mpnews，卡券为wxcard，小程序为miniprogrampage
+     * @param customArticlesMessages 多条图文消息
+     * @param isKf 是否客服发消息
+     * @param kfAccount 客服账号
+     */
     public CustomMessageMain(String toUser, String msgType, List<CustomArticlesMessage> customArticlesMessages, boolean isKf, String kfAccount) {
         if (msgType.equals(WechatEnums.MSG_TYPE_NEWS.getValue())){
             this.news = new CustomMessage(customArticlesMessages);
