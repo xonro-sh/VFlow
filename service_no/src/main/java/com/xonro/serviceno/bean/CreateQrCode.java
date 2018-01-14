@@ -1,5 +1,8 @@
 package com.xonro.serviceno.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.xonro.serviceno.exception.WechatException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,65 +12,81 @@ import java.util.Map;
  * @date 2018-1-14
  */
 public class CreateQrCode {
-    private Long expire_seconds;
-    private String action_name;
-    private Map<String,Map<String,Object>> action_info;
+    /**
+     * 该二维码有效时间，以秒为单位，最大不超过2592000（即30天），小于等于0时创建永久二维码
+     */
+    @JSONField(name = "expireSeconds")
+    private Long expireSeconds;
+
+    /**
+     * 二维码类型
+     */
+    @JSONField(name = "action_name")
+    private String actionName;
+
+    /**
+     * 二维码详细信息
+     */
+    @JSONField(name = "actionInfo")
+    private Map<String,Map<String,Object>> actionInfo;
 
     /**
      * 构建创建二维码的请求模型
      * @param expireSeconds 二维码有效时长
      * @param scene 场景值
      */
-    public CreateQrCode(Long expireSeconds,Object scene){
+    public CreateQrCode(Long expireSeconds,Object scene) throws WechatException {
         //场景参数
         Map<String,Object> sceneMap = new HashMap<>();
         if (scene instanceof String){
             if (expireSeconds <= 0){
                 //二维码类型:永久的字符串参数值
-                this.action_name = "QR_LIMIT_STR_SCENE";
+                this.actionName = "QR_LIMIT_STR_SCENE";
             }else {
                 //二维码类型:临时的字符串参数值
-                this.action_name ="QR_STR_SCENE";
-                this.expire_seconds = expireSeconds;
+                this.actionName ="QR_STR_SCENE";
+                this.expireSeconds = expireSeconds;
             }
             sceneMap.put("scene_str",scene);
         }else if (scene instanceof Integer){
             if (expireSeconds <= 0){
                 //二维码类型:永久的整型参数值
-                this.action_name = "QR_LIMIT_SCENE";
+                this.actionName = "QR_LIMIT_SCENE";
             }else {
                 //二维码类型:临时的整型参数值
-                this.action_name ="QR_SCENE";
-                this.expire_seconds = expireSeconds;
+                this.actionName ="QR_SCENE";
+                this.expireSeconds = expireSeconds;
             }
             sceneMap.put("scene_id",scene);
+        }else {
+            throw new WechatException("error parameter","scene type only can be String or Integer");
         }
 
-        this.action_info = new HashMap<>();
-        this.action_info.put("scene",sceneMap);
+        this.actionInfo = new HashMap<>();
+        this.actionInfo.put("scene",sceneMap);
     }
 
-    public Long getExpire_seconds() {
-        return expire_seconds;
+    public Long getExpireSeconds() {
+        return expireSeconds;
     }
 
-    public void setExpire_seconds(Long expire_seconds) {
-        this.expire_seconds = expire_seconds;
+    public void setExpireSeconds(Long expireSeconds) {
+        this.expireSeconds = expireSeconds;
     }
 
-    public String getAction_name() {
-        return action_name;
+    public String getActionName() {
+        return actionName;
     }
 
-    public void setAction_name(String action_name) {
-        this.action_name = action_name;
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
     }
 
-    public Map<String, Map<String, Object>> getAction_info() {
-        return action_info;
+    public Map<String, Map<String, Object>> getActionInfo() {
+        return actionInfo;
     }
 
-    public void setAction_info(Map<String, Map<String, Object>> action_info) {
-        this.action_info = action_info;
+    public void setActionInfo(Map<String, Map<String, Object>> actionInfo) {
+        this.actionInfo = actionInfo;
     }
 }

@@ -2,6 +2,7 @@ package com.xonro.serviceno;
 
 import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.CreateQrCode;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -23,7 +24,7 @@ public class TestCases {
     }
 
     @Test
-    public void testCreateQrCode(){
+    public void testCreateQrCode() throws WechatException {
         CreateQrCode createQrCode = new CreateQrCode(0L,"123456qwe");
         System.out.println(JSON.toJSONString(createQrCode));
     }

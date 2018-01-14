@@ -8,16 +8,16 @@ package com.xonro.serviceno.bean;
 public class QrCode {
     public QrCode(){}
 
-    public QrCode(long expire_seconds,long createTime,String url,byte[] qrCode){
+    public QrCode(long expireSeconds, long createTime, String url, byte[] qrCode){
         this.createTime = createTime;
-        this.expire_seconds = expire_seconds;
+        this.expireSeconds = expireSeconds;
         this.url = url;
         this.qrCode = qrCode;
     }
     /**
      * 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天）
      */
-    private long expire_seconds;
+    private long expireSeconds;
 
     /**
      * 二维码创建时的时间戳，单位为秒
@@ -34,12 +34,12 @@ public class QrCode {
      */
     private byte[] qrCode;
 
-    public long getExpire_seconds() {
-        return expire_seconds;
+    public long getExpireSeconds() {
+        return expireSeconds;
     }
 
-    public void setExpire_seconds(long expire_seconds) {
-        this.expire_seconds = expire_seconds;
+    public void setExpireSeconds(long expireSeconds) {
+        this.expireSeconds = expireSeconds;
     }
 
     public long getCreateTime() {

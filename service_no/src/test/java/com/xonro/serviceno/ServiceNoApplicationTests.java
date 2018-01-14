@@ -45,6 +45,17 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private MassMessageService massMessageService;
+
+    @Autowired
+    private WechatService wechatService;
+
+
+    @Test
+    public void testCreateQrCode() throws IOException {
+        QrCode qrCode = wechatService.createQrCode(new Long(24*60*60),RandomStringUtils.randomAlphanumeric(16));
+        FileUtils.writeByteArrayToFile(new File("test.png"),qrCode.getQrCode());
+    }
+
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
