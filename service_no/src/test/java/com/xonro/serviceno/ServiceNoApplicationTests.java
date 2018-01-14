@@ -1,11 +1,16 @@
 package com.xonro.serviceno;
 
+import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.service.TokenService;
+import com.xonro.serviceno.service.WechatService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -33,6 +40,16 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private CustomService customService;
+
+    @Autowired
+    private WechatService wechatService;
+
+    @Test
+    public void testCreateQrCode() throws IOException {
+        QrCode qrCode = wechatService.createQrCode(1000l, RandomStringUtils.randomAlphanumeric(16));
+        FileUtils.writeByteArrayToFile(new File("qrcode.png"),qrCode.getQrCode());
+    }
+
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -57,24 +74,10 @@ public class ServiceNoApplicationTests {
     @Test
     public void testWechatMessage(){
 //
-//        WechatMessage wechatMessage = new WechatMessage();
-//        WechatArticlesMessage wechatArticlesMessage = new WechatArticlesMessage();
-//        WechatArticlesMessage wechatArticlesMessage1 = new WechatArticlesMessage();
-//        wechatArticlesMessage.setDescription("11111");
-//        wechatArticlesMessage1.setDescription("222");
-//        List<WechatArticlesMessage> wechatArticlesMessages = new ArrayList<>();
-//        wechatArticlesMessages.add(wechatArticlesMessage);
-//        wechatArticlesMessages.add(wechatArticlesMessage1);
-//
-//        System.err.println(ServiceNoHelper.beanToxml(wechatMessage).concat( ServiceNoHelper.getArticlesXml(wechatArticlesMessages)));
     }
 
     @Test
     public void  testCustom(){
-//        customService.addCustom("test@test01", "客服1", "123456");
-//        customService.updateCustom("test@test01", "客服2", "123456");
-//        customService.delCustom("test@test01", "客服2", "123456");
-//        customService.uploadHeadImg(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/a67388a0gy1fiv9qdwp3vj20x40xcafo.jpg").getPath(), "123", "ceshi", "test@test01");
         List<CustomInfo> customInfos = customService.getKfList();
         System.err.println(customService.getKfList());
 
@@ -100,28 +103,6 @@ public class ServiceNoApplicationTests {
                 "        }" +
                 "    ]" +
                 "}";
-//        JSONObject j = JSON.parseObject(result);
-//        List<CustomInfo> j1 = JSON.parseArray(j.getString("kf_list"), CustomInfo.class);
-//        CustomInfo customInfo = new CustomInfo();
-//        RedisConn redisConn = new RedisConn();
-//        RedisConn redisConn1 = new RedisConn();
-//        redisConn.setHost("1111");
-//        redisConn1.setHost("1111");
-//        List<RedisConn> redisConns = new ArrayList<>();
-//        redisConns.add(redisConn);
-//        redisConns.add(redisConn1);
-//        customInfo.setKfAccount("111");
-//        customInfo.setKfHeadimgurl("1111");
-//        customInfo.setKfNick("111");
-//        String j2 = JSON.toJSONString(customInfo);
-//        System.err.println("j1"+j2);
-//        CustomArticlesMessage customArticlesMessage = new CustomArticlesMessage("11","11","11","11");
-//        CustomArticlesMessage customArticlesMessage1 = new CustomArticlesMessage("22","22","22","22");
-//        List<CustomArticlesMessage> customArticlesMessages = new ArrayList<>();
-//        customArticlesMessages.add(customArticlesMessage);
-//        customArticlesMessages.add(customArticlesMessage1);
-//        CustomMessageMain customMessageMain = new CustomMessageMain("11","news", customArticlesMessages, true, "21313");
-//        System.err.println(JSON.toJSONString(customMessageMain));
     }
 
 }

@@ -25,8 +25,10 @@
 
         <xstream.version>1.4.10</xstream.version>
 		<commons-lang3.version>3.4</commons-lang3.version>
+        <commons-io.version>2.5</commons-io.version>
 		<fastjson.version>1.2.35</fastjson.version>
 		<httpclient.version>4.5.2</httpclient.version>
+		<fluent-hc.version>4.5.2</fluent-hc.version>
 	</properties>
 
 	<dependencies>
@@ -81,6 +83,17 @@
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>${fluent-hc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

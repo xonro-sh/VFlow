@@ -6,9 +6,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
+ * 用户基本信息
  * @author louie
  * @date 2018-1-12
- * 用户基本信息
  */
 @Entity
 @Table(name="xr_wechat_user")

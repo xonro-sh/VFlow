@@ -112,4 +112,17 @@ public class UrlBuilder {
     public String buildUserInfoUrl(String openId,String lang){
         return WechatEnums.URL_USER_INFO.getValue()+"access_token="+tokenService.getTokenFromCache()+"&openid="+openId+"&lang="+lang;
     }
+
+    public String buildCreateQrCodeUrl(){
+        return WechatEnums.URL_QRCODE_CREATE.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取二维码图片的请求url
+     * @param ticket
+     * @return
+     */
+    public String buildQrCodeImageUrl(String ticket){
+        return WechatEnums.URL_QRCODE_IMAGE.getValue()+"ticket="+ticket;
+    }
 }

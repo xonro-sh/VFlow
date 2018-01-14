@@ -6,6 +6,7 @@ import com.xonro.serviceno.exception.WechatException;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -168,6 +169,15 @@ public class RequestExecutor {
             httpClient.close();
         }
         return null;
+    }
+
+    /**
+     * 下载文件
+     * @return 返回下载文件的字节流数据
+     * @throws IOException
+     */
+    public byte[] downloadFile() throws IOException {
+        return Request.Get(requestUrl).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asBytes();
     }
 
     /**
