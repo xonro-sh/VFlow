@@ -11,6 +11,11 @@ public class MassMessageResult {
     private String errMsg;
     private String msgId;
     private String msgDataId;
+    private String type;
+    /**
+     * 消息发送后的状态，SEND_SUCCESS表示发送成功，SENDING表示发送中，SEND_FAIL表示发送失败，DELETE表示已删除
+     */
+    private String msgStatus;
 
     @JSONField(name = "errcode")
     public String getErrCode() {
@@ -47,4 +52,23 @@ public class MassMessageResult {
     public void setMsgDataId(String msgDataId) {
         this.msgDataId = msgDataId;
     }
+
+    @JSONField(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @JSONField(name = "msg_status")
+    public String getMsgStatus() {
+        return msgStatus;
+    }
+
+    public void setMsgStatus(String msgStatus) {
+        this.msgStatus = msgStatus;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.xonro.serviceno.service;
 
 import com.xonro.serviceno.bean.massmessage.MassMessageResult;
+import com.xonro.serviceno.bean.massmessage.MassSpeedResult;
 import com.xonro.serviceno.exception.WechatException;
 
 import java.util.List;
@@ -47,6 +48,49 @@ public interface MassMessageService {
      * @param msgType  群发的消息类型，文本消息为text，语音为voice，图片为image，卡券为wxcard
      * @param content 内容 media_id card_id
      * @return 群发结果
+     * @throws WechatException 异常
      */
     MassMessageResult sendAllByOpenId(List<String> toUser, String msgType, String content) throws WechatException;
+
+    /**
+     * 删除群发 （图文和视频消息）
+     * @param msgId 发送出去的消息ID
+     * @param articleIdx 要删除的文章在图文消息中的位置，第一篇编号为1，该字段不填或填0会删除全部文章
+     * @return 删除结果
+     * @throws WechatException 异常
+     */
+    MassMessageResult delMassMessage(String msgId, String articleIdx) throws WechatException;
+
+    /**
+     * 预览群发
+     * @param toWxName 微信号
+     * @param msgType 群发的消息类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+     * @param content 用于群发的消息的media_id或者发送文本消息时文本的内容
+     * @return 预览群发结果
+     * @throws WechatException 异常
+     */
+    MassMessageResult previewMassMessage(String toWxName, String msgType, String content) throws WechatException;
+
+    /**
+     * 查询群发消息发送状态
+     * @param msgId 群发消息后返回的消息id
+     * @return 消息状态
+     * @throws WechatException 异常
+     */
+    MassMessageResult getMassMessageState(String msgId) throws WechatException;
+
+    /**
+     * 查询群发速度
+     * @return 群发速度
+     * @throws WechatException 异常
+     */
+    MassSpeedResult getMassSpeed() throws WechatException;
+
+    /**
+     * 设置群发速度
+     * @param speed 速度 0-4
+     * @return 群发速度
+     * @throws WechatException 异常
+     */
+    MassMessageResult setMassSpeed(Integer speed) throws WechatException;
 }
