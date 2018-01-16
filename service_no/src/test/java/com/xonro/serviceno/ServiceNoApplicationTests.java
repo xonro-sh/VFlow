@@ -1,18 +1,15 @@
 package com.xonro.serviceno;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
-import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.service.MassMessageService;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.service.WechatService;
-import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -49,26 +46,6 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private MassMessageService massMessageService;
-
-    @Autowired
-    private WechatService wechatService;
-
-    @Autowired
-    private UrlBuilder urlBuilder;
-
-    @Test
-    public void testDoGet() throws IOException, WechatException {
-        String url = urlBuilder.buildGetTokenUrl();
-        String result = new RequestExecutor(url).executeGetRequest(String.class);
-        System.out.println(result);
-    }
-
-    @Test
-    public void testCreateQrCode() throws IOException {
-        QrCode qrCode = wechatService.createQrCode(new Long(24*60*60),RandomStringUtils.randomAlphanumeric(16));
-        FileUtils.writeByteArrayToFile(new File("test.png"),qrCode.getQrCode());
-    }
-
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -93,10 +70,24 @@ public class ServiceNoApplicationTests {
     @Test
     public void testWechatMessage(){
 //
+//        WechatMessage wechatMessage = new WechatMessage();
+//        WechatArticlesMessage wechatArticlesMessage = new WechatArticlesMessage();
+//        WechatArticlesMessage wechatArticlesMessage1 = new WechatArticlesMessage();
+//        wechatArticlesMessage.setDescription("11111");
+//        wechatArticlesMessage1.setDescription("222");
+//        List<WechatArticlesMessage> wechatArticlesMessages = new ArrayList<>();
+//        wechatArticlesMessages.add(wechatArticlesMessage);
+//        wechatArticlesMessages.add(wechatArticlesMessage1);
+//
+//        System.err.println(ServiceNoHelper.beanToxml(wechatMessage).concat( ServiceNoHelper.getArticlesXml(wechatArticlesMessages)));
     }
 
     @Test
     public void  testCustom(){
+//        customService.addCustom("test@test01", "客服1", "123456");
+//        customService.updateCustom("test@test01", "客服2", "123456");
+//        customService.delCustom("test@test01", "客服2", "123456");
+//        customService.uploadHeadImg(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/a67388a0gy1fiv9qdwp3vj20x40xcafo.jpg").getPath(), "123", "ceshi", "test@test01");
         List<CustomInfo> customInfos = customService.getKfList();
         System.err.println(customService.getKfList());
 
@@ -122,6 +113,37 @@ public class ServiceNoApplicationTests {
                 "        }" +
                 "    ]" +
                 "}";
+//        JSONObject j = JSON.parseObject(result);
+//        List<CustomInfo> j1 = JSON.parseArray(j.getString("kf_list"), CustomInfo.class);
+//        CustomInfo customInfo = new CustomInfo();
+//        RedisConn redisConn = new RedisConn();
+//        RedisConn redisConn1 = new RedisConn();
+//        redisConn.setHost("1111");
+//        redisConn1.setHost("1111");
+//        List<RedisConn> redisConns = new ArrayList<>();
+//        redisConns.add(redisConn);
+//        redisConns.add(redisConn1);
+//        customInfo.setKfAccount("111");
+//        customInfo.setKfHeadimgurl("1111");
+//        customInfo.setKfNick("111");
+//        String j2 = JSON.toJSONString(customInfo);
+//        System.err.println("j1"+j2);
+//        CustomArticlesMessage customArticlesMessage = new CustomArticlesMessage("11","11","11","11");
+//        CustomArticlesMessage customArticlesMessage1 = new CustomArticlesMessage("22","22","22","22");
+//        List<CustomArticlesMessage> customArticlesMessages = new ArrayList<>();
+//        customArticlesMessages.add(customArticlesMessage);
+//        customArticlesMessages.add(customArticlesMessage1);
+//        CustomMessageMain customMessageMain = new CustomMessageMain("11","news", customArticlesMessages, true, "21313");
+//        System.err.println(JSON.toJSONString(customMessageMain));
     }
 
+    @Test
+    public void testMassMessage() throws WechatException {
+//        massMessageService.sendAllByTagId(true, "", "222", "text");
+//        massMessageService.sendAllByTagId(true, "", "svIC4Fs2c9wDw63VPmE5BSkSnJRsGiMm8oF6JDraRFDASpp-yNQf2d3XPINy6b-8", "mpvideo");
+//        massMessageService.previewMassMessage("zz1398730142", "text", "xxxxxxxxxxxxxx");
+//        massMessageService.getMassMessageState("1000000011");
+        massMessageService.setMassSpeed(0);
+        massMessageService.getMassSpeed();
+    }
 }

@@ -134,6 +134,46 @@ public class UrlBuilder {
     }
 
     /**
+     * 构建删除消息的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildDelMassMessage(){
+        return WechatEnums.URL_MASSMESSAGE_DELETE.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建预览群发消息的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildPreviewUrl(){
+        return WechatEnums.URL_MASSMESSAGE_PREVIEW.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建查询群发消息发送状态的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildGetStateUrl(){
+        return WechatEnums.URL_MASSMESSAGE_GET.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取群发速度的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildGetMassSpeedUrl(){
+        return WechatEnums.URL_MASSMESSAGE_GETMASSSPEED.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建设置群发速度的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildSetMassSpeedUrl(){
+        return WechatEnums.URL_MASSMESSAGE_SETMASSSPEED.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
      * 构建创建含有用户信息二维码的请求url
      * @return
      */
@@ -149,4 +189,5 @@ public class UrlBuilder {
     public String buildQrCodeImageUrl(String ticket){
         return WechatEnums.URL_QRCODE_IMAGE.getValue()+"ticket="+ticket;
     }
+
 }
