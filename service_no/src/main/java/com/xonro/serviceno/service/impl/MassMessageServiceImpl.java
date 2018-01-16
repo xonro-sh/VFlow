@@ -55,7 +55,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("send_ignore_reprint", sendIgnoreReprint);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).
+                    execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -92,7 +94,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("msgtype", msgType);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByTag())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -120,7 +124,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("send_ignore_reprint", sendIgnoreReprint);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -153,7 +159,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("msgtype", msgType);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildSendAllByOpenId())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -176,7 +184,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("article_idx", articleIdx);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildDelMassMessage()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildDelMassMessage())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -209,7 +219,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("msgtype", msgType);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildPreviewUrl()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildPreviewUrl())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -230,7 +242,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("msg_id", msgId);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildGetStateUrl()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildGetStateUrl())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -247,8 +261,7 @@ public class MassMessageServiceImpl implements MassMessageService{
     @Override
     public MassSpeedResult getMassSpeed() throws WechatException {
         try {
-            String result = new RequestExecutor(urlBuilder.buildGetMassSpeedUrl()).executeGetRequest();
-            return JSON.parseObject(result, MassSpeedResult.class);
+            return new RequestExecutor(urlBuilder.buildGetMassSpeedUrl()).execute().getResponseAsObject(MassSpeedResult.class);
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
             throw new WechatException("006", "查询群发速度失败");
@@ -269,7 +282,9 @@ public class MassMessageServiceImpl implements MassMessageService{
         dataParams.put("speed", speed);
         MassMessageResult massMessageResult;
         try {
-            massMessageResult = new RequestExecutor(urlBuilder.buildSetMassSpeedUrl()).executePostRequest(JSON.toJSONString(dataParams),MassMessageResult.class);
+            massMessageResult = new RequestExecutor(urlBuilder.buildSetMassSpeedUrl())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MassMessageResult.class);
             return massMessageResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);

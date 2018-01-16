@@ -38,7 +38,7 @@ public class JsApiServiceImpl implements JsApiService {
     public WechatJsApiTicket getJsApiTicket() throws IOException, WechatException {
         String url = urlBuilder.buildJsApiTicketUrl();
         try {
-            jsApiTicket = new RequestExecutor(url).executeGetRequest(WechatJsApiTicket.class);
+            jsApiTicket = new RequestExecutor(url).execute().getResponseAsObject(WechatJsApiTicket.class);
             jsApiTicket.setAccessTime(System.currentTimeMillis()/1000);
             return jsApiTicket;
         } catch (WechatException e) {

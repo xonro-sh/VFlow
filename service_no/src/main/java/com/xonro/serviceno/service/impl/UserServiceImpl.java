@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
     public UserInfo getUserInfo(String openId) {
         String url = urlBuilder.buildUserInfoUrl(openId);
         try {
-            return new RequestExecutor(url).executeGetRequest(UserInfo.class);
+            return new RequestExecutor(url).execute().getResponseAsObject(UserInfo.class);
         } catch (WechatException e) {
             logger.error(e.getMessage(),e);
         } catch (IOException e) {

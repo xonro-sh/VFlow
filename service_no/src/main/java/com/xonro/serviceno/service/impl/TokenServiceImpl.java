@@ -86,7 +86,7 @@ public class TokenServiceImpl implements TokenService{
     public WechatAccessToken getAccessToken() throws IOException, WechatException {
         String url = urlBuilder.buildGetTokenUrl();
         try {
-            WechatAccessToken token = new RequestExecutor(url).executeGetRequest(WechatAccessToken.class);
+            WechatAccessToken token = new RequestExecutor(url).execute().getResponseAsObject(WechatAccessToken.class);
             token.setAccessTimestamp(System.currentTimeMillis()/1000);
             cacheToken(token);
             return token;

@@ -27,11 +27,12 @@ public class WechatServiceImpl implements WechatService {
 
     @Override
     public QrCode createQrCode(Long expireSeconds, Object sceneValue) {
-        RequestExecutor executor = new RequestExecutor(urlBuilder.buildCreateQrCodeUrl());
         try {
             // 1、获取含有参数二维码
             CreateQrCode createQrCode = new CreateQrCode(expireSeconds,sceneValue);
-            JSONObject jsonObject = executor.executePostRequest(JSON.toJSONString(createQrCode),JSONObject.class);
+            JSONObject jsonObject = new RequestExecutor(urlBuilder.buildCreateQrCodeUrl())
+                    .execute(JSON.toJSONString(createQrCode))
+                    .getResponseAsObject(JSONObject.class);
             String ticket = jsonObject.getString("ticket");
             long reExpireSeconds = jsonObject.getLong("expire_seconds");
             String url = jsonObject.getString("url");

@@ -47,7 +47,9 @@ public class CustomServiceImpl implements CustomService{
         jsonObject.put("password", StringUtils.isEmpty(password)?"": DigestUtils.md5Hex(password));
         CustomServiceResult customServiceResult;
         try {
-            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceAdd()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceAdd())
+                    .execute(jsonObject.toJSONString())
+                    .getResponseAsObject(CustomServiceResult.class);
             return customServiceResult;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -71,7 +73,9 @@ public class CustomServiceImpl implements CustomService{
         jsonObject.put("password", StringUtils.isEmpty(password)?"": DigestUtils.md5Hex(password));
         CustomServiceResult customServiceResult;
         try {
-            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate())
+                    .execute(jsonObject.toJSONString())
+                    .getResponseAsObject(CustomServiceResult.class);
             return customServiceResult;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -91,7 +95,7 @@ public class CustomServiceImpl implements CustomService{
     public CustomServiceResult delCustom(@NotNull String kfAccount,String nickName, String password) {
         CustomServiceResult customServiceResult;
         try {
-            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceDel(kfAccount, nickName, password)).executeGetRequest(CustomServiceResult.class);
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceDel(kfAccount, nickName, password)).execute().getResponseAsObject(CustomServiceResult.class);
             return customServiceResult;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -121,9 +125,8 @@ public class CustomServiceImpl implements CustomService{
      */
     @Override
     public List<CustomInfo> getKfList() {
-        String result;
         try {
-            result = new RequestExecutor(urlBuilder.buildGetKfList()).executeGetRequest(String.class);
+            String result = new RequestExecutor(urlBuilder.buildGetKfList()).execute().getResponseAsObject(String.class);
             JSONObject json = JSON.parseObject(result);
             return JSON.parseArray(json.getString("kf_list"), CustomInfo.class);
         } catch (Exception e) {
@@ -142,7 +145,9 @@ public class CustomServiceImpl implements CustomService{
     public CustomServiceResult customSend(CustomMessageMain customMessageMain) {
         CustomServiceResult customServiceResult;
         try {
-            customServiceResult = new RequestExecutor(urlBuilder.buildCustomSend()).executePostRequest(JSON.toJSONString(customMessageMain),CustomServiceResult.class);
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomSend()).
+                    execute(JSON.toJSONString(customMessageMain))
+                    .getResponseAsObject(CustomServiceResult.class);
             return customServiceResult;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -164,7 +169,9 @@ public class CustomServiceImpl implements CustomService{
         jsonObject.put("command", typing);
         CustomServiceResult customServiceResult;
         try {
-            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate()).executePostRequest(jsonObject.toJSONString(),CustomServiceResult.class);
+            customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceUpdate())
+                    .execute(jsonObject.toJSONString())
+                    .getResponseAsObject(CustomServiceResult.class);
             return customServiceResult;
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

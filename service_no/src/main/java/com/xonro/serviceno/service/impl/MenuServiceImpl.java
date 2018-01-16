@@ -36,7 +36,9 @@ public class MenuServiceImpl implements MenuService{
     public MenuResult menuCreate(Button button) throws WechatException {
         MenuResult menuResult;
         try {
-            menuResult = new RequestExecutor(urlBuilder.buildMenuCreateUrl()).executePostRequest(JSON.toJSONString(button),MenuResult.class);
+            menuResult = new RequestExecutor(urlBuilder.buildMenuCreateUrl())
+                    .execute(JSON.toJSONString(button))
+                    .getResponseAsObject(MenuResult.class);
             return menuResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -53,7 +55,9 @@ public class MenuServiceImpl implements MenuService{
     @Override
     public String menuGet() throws WechatException {
         try {
-            return new RequestExecutor(urlBuilder.buildMenuGetUrl()).executeGetRequest();
+            return new RequestExecutor(urlBuilder.buildMenuGetUrl())
+                    .execute()
+                    .getResponseAsObject(String.class);
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
             throw new WechatException("002", "查询菜单失败");
@@ -69,7 +73,9 @@ public class MenuServiceImpl implements MenuService{
     @Override
     public MenuResult menuDel() throws WechatException {
         try {
-            String result = new RequestExecutor(urlBuilder.buildMenuDelUrl()).executeGetRequest();
+            String result = new RequestExecutor(urlBuilder.buildMenuDelUrl())
+                    .execute()
+                    .getResponseAsObject(String.class);
             System.err.println("result=="+result);
             return JSON.parseObject(result, MenuResult.class);
         } catch (IOException | WechatException e) {
@@ -89,7 +95,9 @@ public class MenuServiceImpl implements MenuService{
     public MenuResult menuAddConditional(Button button) throws WechatException {
         MenuResult menuResult;
         try {
-            menuResult = new RequestExecutor(urlBuilder.buildMenuConditionalUrl()).executePostRequest(JSON.toJSONString(button),MenuResult.class);
+            menuResult = new RequestExecutor(urlBuilder.buildMenuConditionalUrl())
+                    .execute(JSON.toJSONString(button))
+                    .getResponseAsObject(MenuResult.class);
             return menuResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -111,7 +119,9 @@ public class MenuServiceImpl implements MenuService{
         dataParams.put("menuid", menuId);
         MenuResult menuResult;
         try {
-            menuResult = new RequestExecutor(urlBuilder.buildMenuConditionalDelUrl()).executePostRequest(JSON.toJSONString(dataParams),MenuResult.class);
+            menuResult = new RequestExecutor(urlBuilder.buildMenuConditionalDelUrl())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(MenuResult.class);
             return menuResult;
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
@@ -132,7 +142,9 @@ public class MenuServiceImpl implements MenuService{
         TreeMap<String,Object> dataParams = new TreeMap<>();
         dataParams.put("user_id", userId);
         try {
-            return new RequestExecutor(urlBuilder.buildMenuTryMatch()).executePostRequest(JSON.toJSONString(dataParams));
+            return new RequestExecutor(urlBuilder.buildMenuTryMatch())
+                    .execute(JSON.toJSONString(dataParams))
+                    .getResponseAsObject(String.class);
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
             throw new WechatException("006", "个性化菜单匹配结果失败");
@@ -148,7 +160,9 @@ public class MenuServiceImpl implements MenuService{
     @Override
     public String getCurrentSelfMenu() throws WechatException {
         try {
-            return new RequestExecutor(urlBuilder.buildGetCurrentSelfMenuUrl()).executeGetRequest();
+            return new RequestExecutor(urlBuilder.buildGetCurrentSelfMenuUrl())
+                    .execute()
+                    .getResponseAsObject(String.class);
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);
             throw new WechatException("007", "查询自定义菜单配置失败");
