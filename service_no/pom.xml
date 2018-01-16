@@ -29,6 +29,7 @@
 		<fastjson.version>1.2.35</fastjson.version>
 		<httpclient.version>4.5.2</httpclient.version>
 		<fluent-hc.version>4.5.2</fluent-hc.version>
+        <httpmime.version>4.5.2</httpmime.version>
 	</properties>
 
 	<dependencies>
@@ -87,6 +88,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
 			<version>${fluent-hc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>${httpmime.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

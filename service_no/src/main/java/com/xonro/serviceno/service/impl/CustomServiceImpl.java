@@ -123,7 +123,7 @@ public class CustomServiceImpl implements CustomService{
     public List<CustomInfo> getKfList() {
         String result;
         try {
-            result = new RequestExecutor(urlBuilder.buildGetKfList()).executeGetRequest();
+            result = new RequestExecutor(urlBuilder.buildGetKfList()).executeGetRequest(String.class);
             JSONObject json = JSON.parseObject(result);
             return JSON.parseArray(json.getString("kf_list"), CustomInfo.class);
         } catch (Exception e) {
