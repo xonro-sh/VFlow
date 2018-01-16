@@ -10,11 +10,13 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,7 +215,6 @@ public class RequestExecutor {
             }
             client.close();
         }
-        return null;
     }
     /**
      * 执行post请求
@@ -263,15 +264,6 @@ public class RequestExecutor {
     }
 
     /**
-     * 下载文件
-     * @return 返回下载文件的字节流数据
-     * @throws IOException
-     */
-    public byte[] downloadFile() throws IOException {
-        return Request.Get(requestUrl).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asBytes();
-    }
-
-    /**
      * 校验微信请求是否获取正确响应
      * @param result 微信的响应信息
      * @return true正确相应 false响应失败
@@ -293,7 +285,6 @@ public class RequestExecutor {
      * @param introduction 介绍
      * @param <T> 泛型
       * @return 请求结果
-     * @return result
      */
     public <T>T postFile(File file,
                                   String title,String introduction, Class<T> tClass) {
