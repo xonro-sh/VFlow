@@ -8,12 +8,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * 请求执行器
@@ -36,139 +38,115 @@ public class RequestExecutor {
 
     private String requestUrl;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private String charset = Charset.forName("UTF-8").displayName();
-
+    private Charset charset = Charset.forName("UTF-8");
     /**
      * 执行get请求
      * @param tClass 预期返回的Class类型
-     * @param <T> 泛型
      * @return 请求结果
      * @throws IOException IO异常
      */
-    public <T>T executeGetRequest(Class<T> tClass) throws WechatException, IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
+    public <T>T executeGetRequest(Class<T> tClass) throws IOException, WechatException {
         try {
-            RequestConfig config = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(10000).build();
-            HttpGet httpGet = new HttpGet(requestUrl);
-            httpGet.setConfig(config);
-
-            response = httpClient.execute(httpGet,new BasicHttpContext());
-            if(response.getStatusLine().getStatusCode() != 200){
-                logger.error("request url failed, http code=" + response.getStatusLine().getStatusCode() + ", url=" + requestUrl);
-                return null;
+            String response = doRequest();
+            if (validateResult(response)){
+                return JSON.parseObject(response,tClass);
             }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null){
-                String result = EntityUtils.toString(entity,charset);
-                if (validateResult(result)){
-                    return JSON.parseObject(result,tClass);
-                }
-            }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(),e);
             throw e;
-        }catch (WechatException e){
-            logger.error(e.getMessage(),e);
-            throw e;
-        }finally {
-            if (response != null){
-                response.close();
-            }
-            httpClient.close();
         }
         return null;
     }
 
     /**
-     * 执行get请求
-     * @return 请求结果
-     * @throws IOException IO异常
+     * 执行get请求，将结果转为list返回
+     * @param tClass 期望返回集合的类型
+     * @return 指定类型对象集合
+     * @throws WechatException
+     * @throws IOException
      */
-    public String executeGetRequest() throws IOException, WechatException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
+    public <T>List<T> exeGetRequestAsList(Class<T> tClass) throws WechatException, IOException {
         try {
-            RequestConfig config = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(10000).build();
-            HttpGet httpGet = new HttpGet(requestUrl);
-            httpGet.setConfig(config);
-
-            response = httpClient.execute(httpGet,new BasicHttpContext());
-            if(response.getStatusLine().getStatusCode() != 200){
-                logger.error("request url failed, http code=" + response.getStatusLine().getStatusCode() + ", url=" + requestUrl);
-                return null;
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null){
-                String result = EntityUtils.toString(entity,charset);
-                if (validateResult(result)){
-                    return result;
-                }
+            String response = doRequest();
+            if (validateResult(response)){
+                return JSON.parseArray(response,tClass);
             }
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
             throw e;
-        }catch (WechatException e){
+        } catch (WechatException e) {
             logger.error(e.getMessage(),e);
             throw e;
-        }finally {
-            if (response != null){
-                response.close();
-            }
-            httpClient.close();
         }
         return null;
     }
 
     /**
      * 执行post请求
-     * @param requestData 请求数据
-     * @param tClass 预期返回的Class类型
-     * @param <T> 泛型
-     * @return 请求结果
-     * @throws IOException IO异常
+     * @param requestData post请求提交的请求参数
+     * @param tClass 期望返回的对象类型
+     * @return 期望返回的对象实例
+     * @throws IOException
+     * @throws WechatException
      */
     public <T>T executePostRequest(String requestData,Class<T> tClass) throws IOException, WechatException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-
-        RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setSocketTimeout(5000).build();
-        HttpPost httpPost = new HttpPost(requestUrl);
-        httpPost.setConfig(config);
-        httpPost.setHeader("Content-Type","application/json");
-
         try {
-            StringEntity entity = new StringEntity(requestData,charset);
-            httpPost.setEntity(entity);
-            response = httpClient.execute(httpPost,new BasicHttpContext());
-
-            if (response.getStatusLine().getStatusCode() != 200){
-                logger.error("request url failed, http code=" + response.getStatusLine().getStatusCode() + ", url=" + requestUrl);
-                return null;
-            }
-
-            HttpEntity resEntity = response.getEntity();
-            if (resEntity != null){
-                String result = EntityUtils.toString(resEntity,charset);
-                if (validateResult(result)){
-                    return JSON.parseObject(result,tClass);
-                }
+            String response = doRequest(requestData);
+            if (validateResult(response)){
+                return JSON.parseObject(response,tClass);
             }
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
             throw e;
-        }catch (WechatException e){
+        } catch (WechatException e) {
             logger.error(e.getMessage(),e);
             throw e;
-        }finally {
-            if (response != null){
-                response.close();
-            }
-            httpClient.close();
         }
         return null;
+    }
+
+    /**
+     * 执行post请求，将结果转为list返回
+     * @param tClass 期望返回集合的类型
+     * @return 指定类型对象集合
+     * @throws WechatException
+     * @throws IOException
+     */
+    public <T>List<T> exePostRequestAsList(String requestData,Class<T> tClass) throws IOException, WechatException {
+        try {
+            String response = doRequest(requestData);
+            if (validateResult(response)){
+                return JSON.parseArray(response,tClass);
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } catch (WechatException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        }
+        return null;
+    }
+
+    /**
+     * 执行http请求
+     * @param data 请求数据，有参数则执行post请求，无参数则执行get请求
+     * @return http请求响应的字符信息
+     */
+    private String doRequest(String ... data) throws IOException {
+        //有请求参数，执行post请求
+        if (data != null && data.length > 0){
+            String requestData = data[0];
+            return Request.Post(requestUrl).connectTimeout(3000).socketTimeout(3000)
+                    .bodyString(requestData, ContentType.APPLICATION_JSON)
+                    .execute()
+                    .returnContent().asString(charset);
+        }
+        //无请求参数，执行Get请求
+        else {
+            return Request.Get(requestUrl).connectTimeout(3000).socketTimeout(3000)
+                    .execute().returnContent().asString(charset);
+        }
     }
 
     /**
@@ -177,7 +155,64 @@ public class RequestExecutor {
      * @throws IOException
      */
     public byte[] downloadFile() throws IOException {
-        return Request.Get(requestUrl).connectTimeout(5000).socketTimeout(5000).execute().returnContent().asBytes();
+        return Request.Get(requestUrl).connectTimeout(3000).socketTimeout(3000)
+                .execute().returnContent().asBytes();
+    }
+
+    /**
+     * 上传文件
+     * @param fileData 文件字节数组
+     * @param fileName 文件名称
+     * @param tClass 期望返回的对象类型
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
+    public <T>T uploadFile(String fileName,byte[] fileData,Class<T> tClass) throws WechatException, IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+
+        InputStreamBody inputStreamBody = null;
+        ByteArrayInputStream arrayInputStream = null;
+        try {
+            arrayInputStream = new ByteArrayInputStream(fileData);
+            inputStreamBody = new InputStreamBody(arrayInputStream,fileName);
+            HttpEntity httpEntity = MultipartEntityBuilder.create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                    .setCharset(Charset.forName("UTF-8"))
+                    .addPart("media",inputStreamBody)
+                    .build();
+
+            RequestConfig config = RequestConfig.custom().setConnectTimeout(3000).setSocketTimeout(3000).build();
+            HttpPost post = new HttpPost(requestUrl);
+            post.setConfig(config);
+
+            post.setEntity(httpEntity);
+            response = client.execute(post);
+
+            if(response.getStatusLine().getStatusCode() != 200){
+                throw new WechatException(response.getStatusLine().getStatusCode()+"","request wechat fail,http code=" + response.getStatusLine().getStatusCode());
+            }
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null){
+                return JSONObject.parseObject(EntityUtils.toString(entity,charset),tClass);
+            }else {
+                throw new WechatException("request wechat fail","response is empty");
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } catch (WechatException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } finally {
+            arrayInputStream.close();
+            if (response != null){
+                response.close();
+            }
+            client.close();
+        }
     }
 
     /**

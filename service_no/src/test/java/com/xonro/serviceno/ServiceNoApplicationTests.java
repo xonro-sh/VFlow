@@ -1,14 +1,18 @@
 package com.xonro.serviceno;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
+import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.service.MassMessageService;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.service.WechatService;
+import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -49,6 +53,15 @@ public class ServiceNoApplicationTests {
     @Autowired
     private WechatService wechatService;
 
+    @Autowired
+    private UrlBuilder urlBuilder;
+
+    @Test
+    public void testDoGet() throws IOException, WechatException {
+        String url = urlBuilder.buildGetTokenUrl();
+        String result = new RequestExecutor(url).executeGetRequest(String.class);
+        System.out.println(result);
+    }
 
     @Test
     public void testCreateQrCode() throws IOException {

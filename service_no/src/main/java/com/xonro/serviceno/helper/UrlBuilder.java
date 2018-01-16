@@ -133,6 +133,10 @@ public class UrlBuilder {
         return WechatEnums.URL_MASSMESSAGE_SENDBYOPENID.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
 
+    /**
+     * 构建创建含有用户信息二维码的请求url
+     * @return
+     */
     public String buildCreateQrCodeUrl(){
         return WechatEnums.URL_QRCODE_CREATE.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
