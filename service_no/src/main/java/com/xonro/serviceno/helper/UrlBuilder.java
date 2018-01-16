@@ -172,6 +172,62 @@ public class UrlBuilder {
     public String buildSetMassSpeedUrl(){
         return WechatEnums.URL_MASSMESSAGE_SETMASSSPEED.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
+
+    /**
+     * 构建菜单创建的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuCreateUrl(){
+        return WechatEnums.URL_MENU_CREATE.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建查询菜单的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuGetUrl(){
+        return WechatEnums.URL_MENU_GET.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建删除菜单的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuDelUrl(){
+        return WechatEnums.URL_MENU_DEL.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建新增个性化菜单的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuConditionalUrl(){
+        return WechatEnums.URL_MENU_ADDCONDITIONAL.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建删除个性化菜单的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuConditionalDelUrl(){
+        return WechatEnums.URL_MENU_DELCONDITIONAL.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建测试个性化菜单的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMenuTryMatch(){
+        return WechatEnums.URL_MENU_TRYMATCH.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取自定义菜单配置的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildGetCurrentSelfMenuUrl(){
+        return WechatEnums.URL_MENU_CURRENTSELFMENU.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
     public String buildCreateQrCodeUrl(){
         return WechatEnums.URL_QRCODE_CREATE.getValue()+"access_token="+tokenService.getTokenFromCache();
     }

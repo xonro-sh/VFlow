@@ -248,7 +248,6 @@ public class MassMessageServiceImpl implements MassMessageService{
     public MassSpeedResult getMassSpeed() throws WechatException {
         try {
             String result = new RequestExecutor(urlBuilder.buildGetMassSpeedUrl()).executeGetRequest();
-            System.err.println("result=="+result);
             return JSON.parseObject(result, MassSpeedResult.class);
         } catch (IOException | WechatException e) {
             logger.error(e.getMessage(),e);

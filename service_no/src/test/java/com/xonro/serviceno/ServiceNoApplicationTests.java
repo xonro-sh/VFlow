@@ -3,13 +3,11 @@ package com.xonro.serviceno;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
+import com.xonro.serviceno.bean.menu.*;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
-import com.xonro.serviceno.service.CustomService;
-import com.xonro.serviceno.service.MassMessageService;
-import com.xonro.serviceno.service.TokenService;
-import com.xonro.serviceno.service.WechatService;
+import com.xonro.serviceno.service.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -46,6 +44,9 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private MassMessageService massMessageService;
+
+    @Autowired
+    private MenuService menuService;
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -145,5 +146,40 @@ public class ServiceNoApplicationTests {
 //        massMessageService.getMassMessageState("1000000011");
         massMessageService.setMassSpeed(0);
         massMessageService.getMassSpeed();
+    }
+
+    @Test
+    public void testMenu() throws WechatException {
+
+        Menu m = new Menu("click", "测试1", "key001");
+        Menu m1 = new Menu("scancode_waitmsg", "测试2", "key002");
+        ViewMenu viewMenu = new ViewMenu("测试url", "https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013");
+//        ViewLimitedMenu viewLimitedMenu = new ViewLimitedMenu("测试图文", "");
+        List<Object> list = new ArrayList<>();
+        List<Object> list1 = new ArrayList<>();
+        List<Object> list2 = new ArrayList<>();
+        list.add(m);
+        list.add(m1);
+        list1.add(viewMenu);
+        Menu m3 = new Menu("主菜单1", list);
+        Menu m2 = new Menu("主菜单2", list1);
+        list2.add(m3);
+        list2.add(m2);
+        MatchRule matchRule = new MatchRule();
+        matchRule.setProvince("四川");
+        matchRule.setCountry("中国");
+        Button b = new Button(list2, matchRule);
+        //创建菜单
+//        menuService.menuAddConditional(b);
+        //删除菜单
+//        menuService.menuDel();
+        //查询菜单
+//        System.err.println(menuService.menuGet());
+        //个性化菜单匹配
+//        System.err.println(menuService.menuTryMatch("hj9315"));
+        //删除个性化菜单
+//        menuService.menuDelConditional("565912596");
+        //查询自定义配置菜单
+        System.err.println(menuService.getCurrentSelfMenu());
     }
 }

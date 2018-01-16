@@ -38,7 +38,8 @@ public class MessageServiceImpl implements MessageService{
             String openId = params.get("FromUserName");
             //事件推送
             if (msgType.equals(WechatEnums.MSG_TYPE_EVENT.getValue())){
-
+                System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
+                return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
             }
             //文本消息
             else if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
@@ -47,6 +48,8 @@ public class MessageServiceImpl implements MessageService{
             }
             //图片消息
             else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE)){
+
+            } else {
 
             }
         } catch (Exception e) {

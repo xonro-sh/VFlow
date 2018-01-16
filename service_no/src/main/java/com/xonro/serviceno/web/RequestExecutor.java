@@ -170,6 +170,52 @@ public class RequestExecutor {
         }
         return null;
     }
+    /**
+     * 执行post请求
+     * @param requestData 请求数据
+     * @return 请求结果
+     * @throws IOException IO异常
+     */
+    public String executePostRequest(String requestData) throws IOException, WechatException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setSocketTimeout(5000).build();
+        HttpPost httpPost = new HttpPost(requestUrl);
+        httpPost.setConfig(config);
+        httpPost.setHeader("Content-Type","application/json");
+
+        try {
+            StringEntity entity = new StringEntity(requestData,charset);
+            httpPost.setEntity(entity);
+            response = httpClient.execute(httpPost,new BasicHttpContext());
+
+            if (response.getStatusLine().getStatusCode() != 200){
+                logger.error("request url failed, http code=" + response.getStatusLine().getStatusCode() + ", url=" + requestUrl);
+                return null;
+            }
+
+            HttpEntity resEntity = response.getEntity();
+            if (resEntity != null){
+                String result = EntityUtils.toString(resEntity,charset);
+                if (validateResult(result)){
+                    return result;
+                }
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        }catch (WechatException e){
+            logger.error(e.getMessage(),e);
+            throw e;
+        }finally {
+            if (response != null){
+                response.close();
+            }
+            httpClient.close();
+        }
+        return null;
+    }
 
     /**
      * 下载文件

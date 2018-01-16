@@ -23,6 +23,13 @@ public enum WechatEnums {
     URL_MASSMESSAGE_GET("https://api.weixin.qq.com/cgi-bin/message/mass/get?","查询群发消息发送状态请求"),
     URL_MASSMESSAGE_GETMASSSPEED("https://api.weixin.qq.com/cgi-bin/message/mass/speed/get?","获取群发速度"),
     URL_MASSMESSAGE_SETMASSSPEED("https://api.weixin.qq.com/cgi-bin/message/mass/speed/set?","设置群发速度"),
+    URL_MENU_CREATE("https://api.weixin.qq.com/cgi-bin/menu/create?","菜单创建请求"),
+    URL_MENU_GET("https://api.weixin.qq.com/cgi-bin/menu/get?","菜单查询请求"),
+    URL_MENU_DEL("https://api.weixin.qq.com/cgi-bin/menu/delete?","菜单删除请求"),
+    URL_MENU_ADDCONDITIONAL("https://api.weixin.qq.com/cgi-bin/menu/addconditional?","创建个性化菜单请求"),
+    URL_MENU_DELCONDITIONAL("https://api.weixin.qq.com/cgi-bin/menu/delconditional?","删除个性化菜单请求"),
+    URL_MENU_TRYMATCH("https://api.weixin.qq.com/cgi-bin/menu/trymatch?","测试个性化菜单匹配请求"),
+    URL_MENU_CURRENTSELFMENU("https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?","获取自定义菜单配置请求"),
     URL_USER_INFO("https://api.weixin.qq.com/cgi-bin/user/info?","通过OpenID来获取用户基本信息"),
     URL_QRCODE_CREATE("https://api.weixin.qq.com/cgi-bin/qrcode/create?","获取带参数的二维码"),
     URL_QRCODE_IMAGE("https://mp.weixin.qq.com/cgi-bin/showqrcode?","用ticket换取二维码图片"),
@@ -50,6 +57,13 @@ public enum WechatEnums {
     EVENT_LOCATION("LOCATION","上报地理位置"),
     EVENT_CLICK("CLICK","点击菜单拉取消息时的事件推送"),
     EVENT_VIEW("VIEW","点击菜单跳转链接时的事件推送"),
+
+    /**菜单类型常量枚举*/
+    MENU_CLICK("click", "点击推事件"),
+    MENU_VIEW("view", "跳转URL"),
+    MENU_SCANPUSH("scancode_push", "扫码推事件"),
+    MENU_SCANMSG("scancode_waitmsg", "扫码推事件且弹出消息接收中"),
+    MENU_VIEWLIMITED("view_limited", "跳转图文消息"),
 
     ;
 
