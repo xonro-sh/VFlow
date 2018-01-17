@@ -43,13 +43,12 @@ public interface CustomService {
 
     /**
      * 设置客服账号的头像
-     * @param filePath 文件路径
      * @param title 标题
-     * @param introduction 描述
+     * @param head 头像字节数据
      * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
      * @return 是否成功
      */
-    CustomServiceResult uploadHeadImg(String filePath, String title, String introduction, String kfAccount);
+    CustomServiceResult uploadHeadImg(String title,byte[] head,String kfAccount);
 
     /**
      * 获取所有客服账号
