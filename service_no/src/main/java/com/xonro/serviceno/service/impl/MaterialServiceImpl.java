@@ -31,13 +31,19 @@ public class MaterialServiceImpl implements MaterialService{
      *
      * @param file 上传的文件
      * @param type 素材类型
+     * @param fileName 文件名称
      * @return 返回结果
      */
     @Override
-    public MaterialResult uploadTemMedia(File file, String type) {
-        MaterialResult materialResult;
-        materialResult = new RequestExecutor(urlBuilder.buildUploadTemMediaUrl(type)).postFile(file,MaterialResult.class);
-        return materialResult;
+    public MaterialResult uploadTemMedia(byte[] file, String type, String fileName) {
+        try {
+            return new RequestExecutor(urlBuilder.buildUploadTemMediaUrl(type))
+                    .upload(fileName, file)
+                    .getResponseAsObject(MaterialResult.class);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
     }
 
     /**
@@ -85,13 +91,19 @@ public class MaterialServiceImpl implements MaterialService{
      * 上传图文消息内的图片获取URL
      *
      * @param file 上传的文件
+     * @param fileName 文件名称
      * @return url, 可放置图文消息中使用
      */
     @Override
-    public MaterialResult uploadImg(File file) {
-        MaterialResult materialResult;
-        materialResult = new RequestExecutor(urlBuilder.buildUpLoadImg()).postFile(file,MaterialResult.class);
-        return materialResult;
+    public MaterialResult uploadImg(byte[] file, String fileName) {
+        try {
+            return new RequestExecutor(urlBuilder.buildUpLoadImg())
+                    .upload(fileName, file)
+                    .getResponseAsObject(MaterialResult.class);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
     }
 
     /**
@@ -114,12 +126,18 @@ public class MaterialServiceImpl implements MaterialService{
      *
      * @param file 上传的文件
      * @param type 媒体文件类型，分别有图片（image）、语音（voice）和缩略图（thumb）
+     * @param fileName 文件名称
      * @return MaterialResult
      */
     @Override
-    public MaterialResult addOthers(File file, String type) {
-        MaterialResult materialResult;
-        materialResult = new RequestExecutor(urlBuilder.buildMaterialAddUrl(type)).postFile(file,MaterialResult.class);
-        return materialResult;
+    public MaterialResult addOthers(byte[] file, String type, String fileName) {
+        try {
+            return new RequestExecutor(urlBuilder.buildMaterialAddUrl(type))
+                    .upload(fileName, file)
+                    .getResponseAsObject(MaterialResult.class);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
     }
 }

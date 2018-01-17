@@ -1,6 +1,5 @@
 package com.xonro.serviceno;
 
-import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.bean.material.Article;
@@ -11,8 +10,6 @@ import com.xonro.serviceno.helper.RedisHelper;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,10 +186,10 @@ public class ServiceNoApplicationTests {
     }
 
     @Test
-    public void testMaterial() throws WechatException {
+    public void testMaterial() throws WechatException, IOException {
         File file = new File(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/a67388a0gy1fiv9qdwp3vj20x40xcafo.jpg").getPath());
         //上传临时素材
-//        System.err.println(materialService.uploadTemMedia(file, "image"));
+        System.err.println(materialService.uploadTemMedia(FileUtils.readFileToByteArray(file), "image", fileName));
         String mediaId = "GVszSzNE0hOiLiPNydDg_qsysCUboi6D87izofLtEFdkY-EsuZDimBH00UIXz5_9";
 //        System.err.println(materialService.getTemMedia(mediaId));
         //新增永久图文素材
@@ -202,7 +199,7 @@ public class ServiceNoApplicationTests {
         NewsResponse newsResponse = new NewsResponse(articles);
 //        System.err.println(materialService.addNews(newsResponse));
         //上传图文消息内的图片获取URL
-        System.err.println(materialService.uploadImg(file));
+//        System.err.println(materialService.uploadImg(file));
     }
 
 }

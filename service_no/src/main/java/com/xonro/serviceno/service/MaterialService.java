@@ -16,9 +16,10 @@ public interface MaterialService {
      * 新增临时素材接口
      * @param file 上传的文件
      * @param type 素材类型
+     * @param fileName 文件名称
      * @return 返回结果
      */
-    MaterialResult uploadTemMedia(File file, String type);
+    MaterialResult uploadTemMedia(byte[] file, String type, String fileName);
 
     /**
      * 获取临时素材接口
@@ -39,9 +40,10 @@ public interface MaterialService {
     /**
      * 上传图文消息内的图片获取URL
      * @param file 上传的文件
+     * @param fileName 文件名称
      * @return url,可放置图文消息中使用
      */
-    MaterialResult uploadImg(File file);
+    MaterialResult uploadImg(byte[] file, String fileName);
 
     /**
      * 新增永久视频素材
@@ -56,7 +58,8 @@ public interface MaterialService {
      * 新增其他永久素材
      * @param file 上传的文件
      * @param type 媒体文件类型，分别有图片（image）、语音（voice）和缩略图（thumb）
+     * @param fileName 文件名称
      * @return MaterialResult
      */
-    MaterialResult addOthers(File file, String type);
+    MaterialResult addOthers(byte[] file, String type, String fileName);
 }
