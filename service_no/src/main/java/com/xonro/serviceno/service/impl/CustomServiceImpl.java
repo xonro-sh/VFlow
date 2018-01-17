@@ -7,15 +7,18 @@ import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.custom.CustomMessageMain;
 import com.xonro.serviceno.bean.custom.CustomServiceResult;
 import com.xonro.serviceno.bean.RedisConn;
+import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.CustomService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -105,18 +108,20 @@ public class CustomServiceImpl implements CustomService{
 
     /**
      * 设置客服账号的头像
-     *
-     * @param filePath     文件路径
      * @param title        标题
-     * @param introduction 描述
      * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
      * @return 是否成功
      */
     @Override
-    public CustomServiceResult uploadHeadImg(String filePath, String title, String introduction, String kfAccount) {
-        CustomServiceResult customServiceResult;
-        customServiceResult = new RequestExecutor(urlBuilder.buildCustomServiceHeadImg(kfAccount)).postFile(new File(filePath),title ,introduction,CustomServiceResult.class);
-        return customServiceResult;
+    public CustomServiceResult uploadHeadImg(String title,byte[] head,String kfAccount) {
+        try {
+            return new RequestExecutor(urlBuilder.buildCustomServiceHeadImg(kfAccount))
+                    .upload(title, head)
+                    .getResponseAsObject(CustomServiceResult.class);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return null;
     }
 
     /**

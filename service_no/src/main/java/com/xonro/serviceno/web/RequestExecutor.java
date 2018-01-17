@@ -10,13 +10,11 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +39,7 @@ public class RequestExecutor {
     private String requestUrl;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Charset charset = Charset.forName("UTF-8");
-    private ExecuteResult executeResult;
+    private String response;
 
     /**
      * 执行http请求
@@ -69,7 +67,40 @@ public class RequestExecutor {
             }
 
             if (validateResult(response)){
-                this.executeResult = new ExecuteResult(response);
+                this.response = response;
+                return this;
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } catch (WechatException e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        }
+        return null;
+    }
+
+    /**
+     * 上传文件
+     * @param fileName 文件名称
+     * @param mediaData 文件字节码数组
+     * @return 上传结果
+     * @throws IOException
+     * @throws WechatException
+     */
+    public RequestExecutor upload(String fileName,byte[] mediaData) throws IOException, WechatException {
+        try {
+            HttpEntity httpEntity = MultipartEntityBuilder.create()
+                    .addBinaryBody(fileName,mediaData,ContentType.DEFAULT_BINARY,fileName)
+                    .build();
+
+            String response = Request.Post(requestUrl)
+                    .body(httpEntity)
+                    .execute()
+                    .returnContent().asString(charset);
+
+            if (validateResult(response)){
+                this.response = response;
                 return this;
             }
         } catch (IOException e) {
@@ -89,7 +120,7 @@ public class RequestExecutor {
      * @return 转换后的对象实例
      */
     public <T>T getResponseAsObject(Class<T> objectClass){
-        return this.executeResult.getResponseAsObject(objectClass);
+        return JSON.parseObject(response,objectClass);
     }
 
     /**
@@ -99,30 +130,9 @@ public class RequestExecutor {
      * @return 转换后的对象实例集合
      */
     public <T>List<T> getResponseAsList(Class<T> objectClass){
-        return this.executeResult.getResponseAsList(objectClass);
+        return JSON.parseArray(response,objectClass);
     }
 
-    /**
-     * 请求执行结果内部类
-     */
-    private class ExecuteResult{
-        /**
-         * http请求响应结果
-         */
-        private String response;
-
-        private ExecuteResult(String response){
-            this.response = response;
-        }
-
-        private <T>T getResponseAsObject(Class<T> objectClass){
-            return JSON.parseObject(response,objectClass);
-        }
-
-        private <T>List<T> getResponseAsList(Class<T> objectClass){
-            return JSON.parseArray(response,objectClass);
-        }
-    }
 
     /**
      * 下载文件
@@ -134,61 +144,6 @@ public class RequestExecutor {
                 .execute().returnContent().asBytes();
     }
 
-    /**
-     * 上传文件
-     * @param fileData 文件字节数组
-     * @param fileName 文件名称
-     * @param tClass 期望返回的对象类型
-     * @param <T>
-     * @return
-     * @throws IOException
-     */
-    public <T>T uploadFile(String fileName,byte[] fileData,Class<T> tClass) throws WechatException, IOException {
-        CloseableHttpClient client = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-
-        InputStreamBody inputStreamBody = null;
-        ByteArrayInputStream arrayInputStream = null;
-        try {
-            arrayInputStream = new ByteArrayInputStream(fileData);
-            inputStreamBody = new InputStreamBody(arrayInputStream,fileName);
-            HttpEntity httpEntity = MultipartEntityBuilder.create()
-                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-                    .setCharset(Charset.forName("UTF-8"))
-                    .addPart("media",inputStreamBody)
-                    .build();
-
-            RequestConfig config = RequestConfig.custom().setConnectTimeout(3000).setSocketTimeout(3000).build();
-            HttpPost post = new HttpPost(requestUrl);
-            post.setConfig(config);
-
-            post.setEntity(httpEntity);
-            response = client.execute(post);
-
-            if(response.getStatusLine().getStatusCode() != 200){
-                throw new WechatException(response.getStatusLine().getStatusCode()+"","request wechat fail,http code=" + response.getStatusLine().getStatusCode());
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity != null){
-                return JSONObject.parseObject(EntityUtils.toString(entity,charset),tClass);
-            }else {
-                throw new WechatException("request wechat fail","response is empty");
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(),e);
-            throw e;
-        } catch (WechatException e) {
-            logger.error(e.getMessage(),e);
-            throw e;
-        } finally {
-            arrayInputStream.close();
-            if (response != null){
-                response.close();
-            }
-            client.close();
-        }
-    }
 
     /**
      * 校验微信请求是否获取正确响应
@@ -203,68 +158,6 @@ public class RequestExecutor {
         }
         logger.error("访问微信失败，url："+requestUrl+",错误信息："+result);
         throw new WechatException(errcode,jObject.getString("errmsg"));
-    }
-
-    /**
-     * 上传文件
-     * @param file 文件
-     * @param title 标题
-     * @param introduction 介绍
-     * @param <T> 泛型
-      * @return 请求结果
-     */
-    public <T>T postFile(File file,
-                                  String title,String introduction, Class<T> tClass) {
-        if(!file.exists()) {
-            return null;
-        }
-        String result = null;
-        try {
-            URL url1 = new URL(requestUrl);
-            HttpURLConnection conn = (HttpURLConnection) url1.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(30000);
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setUseCaches(false);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Cache-Control", "no-cache");
-            String boundary = "-----------------------------"+System.currentTimeMillis();
-            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
-
-            OutputStream output = conn.getOutputStream();
-            output.write(("--" + boundary + "\r\n").getBytes());
-            output.write(String.format("Content-Disposition: form-data; name=\"media\"; filename=\"%s\"\r\n", file.getName()).getBytes());
-            output.write("Content-Type:application/octet-stream \r\n\r\n".getBytes());
-            byte[] data = new byte[1024];
-            int len;
-            FileInputStream input = new FileInputStream(file);
-            while((len=input.read(data))>-1){
-                output.write(data, 0, len);
-            }
-            output.write(("--" + boundary + "\r\n").getBytes());
-            output.write("Content-Disposition: form-data; name=\"description\";\r\n\r\n".getBytes());
-            output.write(String.format("{\"title\":\"%s\", \"introduction\":\"%s\"}",title,introduction).getBytes());
-            output.write(("\r\n--" + boundary + "--\r\n\r\n").getBytes());
-            output.flush();
-            output.close();
-            input.close();
-            InputStream resp = conn.getInputStream();
-            StringBuilder sb = new StringBuilder();
-            while((len= resp.read(data))>-1) {
-                sb.append(new String(data, 0, len, "utf-8"));
-            }
-            resp.close();
-            result = sb.toString();
-            System.out.println(result);
-        } catch (ClientProtocolException e) {
-            logger.error("postFile，不支持http协议",e);
-        } catch (IOException e) {
-            logger.error("postFile数据传输失败",e);
-        }
-        logger.info("{}: result={}",requestUrl,result);
-        return JSON.parseObject(result,tClass);
     }
 
 }
