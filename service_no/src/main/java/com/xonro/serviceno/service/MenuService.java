@@ -5,6 +5,7 @@ import com.xonro.serviceno.bean.menu.MenuResult;
 import com.xonro.serviceno.exception.WechatException;
 
 /**
+ * 菜单管理相关接口
  * @author Alex
  * @date 2018/1/16
  */

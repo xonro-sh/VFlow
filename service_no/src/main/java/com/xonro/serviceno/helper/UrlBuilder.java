@@ -230,6 +230,48 @@ public class UrlBuilder {
     }
 
     /**
+     * 构建新增临时素材的请求url
+     * @param type 	媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
+     * @return 构建完成的请求url
+     */
+    public String buildUploadTemMediaUrl(String type){
+        return WechatEnums.URL_TEMPORARY_UPLOADMEDIA.getValue()+"access_token="+tokenService.getTokenFromCache()+"&type="+type;
+    }
+
+    /**
+     * 构建获取临时素材的请求url
+     * @param mediaId 构建完成的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildGetTemMediaUrl(String mediaId){
+        return WechatEnums.URL_TEMPORARY_GETMEDIA.getValue()+"access_token="+tokenService.getTokenFromCache()+"&media_id="+mediaId;
+    }
+
+    /**
+     * 构建新增永久图文素材的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMaterialAddNewsUrl(){
+        return WechatEnums.URL_MATERIAL_ADDNEWS.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 上传图文消息内的图片获取URL
+     * @return 构建完成的请求url
+     */
+    public String buildUpLoadImg(){
+        return WechatEnums.URL_MATERIAL_UPLOADIMG.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建新增其他类型永久素材url
+     * @param type 构建完成的请求url
+     * @return 构建完成的请求url
+     */
+    public String buildMaterialAddUrl(String type){
+        return WechatEnums.URL_MATERIAL_ADD.getValue()+"access_token="+tokenService.getTokenFromCache()+"&type="+type;
+    }
+    /**
      * 构建创建含有用户信息二维码的请求url
      * @return
      */

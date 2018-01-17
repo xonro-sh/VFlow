@@ -30,6 +30,11 @@ public enum WechatEnums {
     URL_MENU_DELCONDITIONAL("https://api.weixin.qq.com/cgi-bin/menu/delconditional?","删除个性化菜单请求"),
     URL_MENU_TRYMATCH("https://api.weixin.qq.com/cgi-bin/menu/trymatch?","测试个性化菜单匹配请求"),
     URL_MENU_CURRENTSELFMENU("https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?","获取自定义菜单配置请求"),
+    URL_TEMPORARY_UPLOADMEDIA("https://api.weixin.qq.com/cgi-bin/media/upload?","新增临时素材"),
+    URL_TEMPORARY_GETMEDIA("https://api.weixin.qq.com/cgi-bin/media/get?","获取临时素材"),
+    URL_MATERIAL_ADDNEWS("https://api.weixin.qq.com/cgi-bin/material/add_news?","新增永久图文素材"),
+    URL_MATERIAL_UPLOADIMG("https://api.weixin.qq.com/cgi-bin/media/uploadimg?","上传图文消息内的图片获取URL"),
+    URL_MATERIAL_ADD("https://api.weixin.qq.com/cgi-bin/material/add_material?","新增其他类型永久素材"),
     URL_USER_INFO("https://api.weixin.qq.com/cgi-bin/user/info?","通过OpenID来获取用户基本信息"),
     URL_QRCODE_CREATE("https://api.weixin.qq.com/cgi-bin/qrcode/create?","获取带参数的二维码"),
     URL_QRCODE_IMAGE("https://mp.weixin.qq.com/cgi-bin/showqrcode?","用ticket换取二维码图片"),
@@ -65,6 +70,11 @@ public enum WechatEnums {
     MENU_SCANMSG("scancode_waitmsg", "扫码推事件且弹出消息接收中"),
     MENU_VIEWLIMITED("view_limited", "跳转图文消息"),
 
+    /**素材类型常量枚举*/
+    MATERIAL_IMAGE("image", "图片"),
+    MATERIAL_VOICE("voice", "语音"),
+    MATERIAL_VIDEO("video", "视频"),
+    MATERIAL_THUMB("thumb", "缩略图"),
     ;
 
     private WechatEnums(String value,String desc){

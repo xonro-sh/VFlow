@@ -3,6 +3,8 @@ package com.xonro.serviceno;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.custom.CustomInfo;
 import com.xonro.serviceno.bean.WechatMessage;
+import com.xonro.serviceno.bean.material.Article;
+import com.xonro.serviceno.bean.material.NewsResponse;
 import com.xonro.serviceno.bean.menu.*;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.RedisHelper;
@@ -47,6 +49,9 @@ public class ServiceNoApplicationTests {
 
     @Autowired
     private MenuService menuService;
+
+    @Autowired
+    private MaterialService materialService;
 	@Test
 	public void contextLoads() {
         redisHelper.set("123", "测试");
@@ -182,4 +187,22 @@ public class ServiceNoApplicationTests {
         //查询自定义配置菜单
         System.err.println(menuService.getCurrentSelfMenu());
     }
+
+    @Test
+    public void testMaterial() throws WechatException {
+        File file = new File(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/a67388a0gy1fiv9qdwp3vj20x40xcafo.jpg").getPath());
+        //上传临时素材
+//        System.err.println(materialService.uploadTemMedia(file, "image"));
+        String mediaId = "GVszSzNE0hOiLiPNydDg_qsysCUboi6D87izofLtEFdkY-EsuZDimBH00UIXz5_9";
+//        System.err.println(materialService.getTemMedia(mediaId));
+        //新增永久图文素材
+        List<Article> articles = new ArrayList<>();
+        Article article = new Article.Builder("测试测试", "TJ1FmAN2Hjoy1ep6cIyb0T9hIlLmYlB3SXPfU7MI3Hxp2ywPJciWvzU9fj-YKy_m", "1", "测似乎测似乎测似乎测似乎", "https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729").build();
+        articles.add(article);
+        NewsResponse newsResponse = new NewsResponse(articles);
+//        System.err.println(materialService.addNews(newsResponse));
+        //上传图文消息内的图片获取URL
+        System.err.println(materialService.uploadImg(file));
+    }
+
 }
