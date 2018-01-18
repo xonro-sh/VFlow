@@ -109,6 +109,16 @@ public class Article {
             this.contentSourceUrl = contentSourceUrl;
         }
 
+        public Builder(String title, String thumbMediaId, String showCoverPic, String content, String contentSourceUrl,String author,String digest){
+            this.title = title;
+            this.thumbMediaId = thumbMediaId;
+            this.showCoverPic = showCoverPic;
+            this.content = content;
+            this.contentSourceUrl = contentSourceUrl;
+            this.author = author;
+            this.digest = digest;
+        }
+
         public Builder author(String val){
             author = val;
             return this;

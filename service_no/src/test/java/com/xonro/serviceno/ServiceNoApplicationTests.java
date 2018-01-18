@@ -187,19 +187,32 @@ public class ServiceNoApplicationTests {
 
     @Test
     public void testMaterial() throws WechatException, IOException {
+        File videoFile = new File("C:/Users/user/Desktop/新建文件夹 (6)/966a74bb345344dd6a50d9b7bd518f9a.mp4");
+//        System.err.println(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/966a74bb345344dd6a50d9b7bd518f9a.mp4").getPath());
         File file = new File(ServiceNoApplicationTests.class.getClassLoader().getResource("static/image/a67388a0gy1fiv9qdwp3vj20x40xcafo.jpg").getPath());
         //上传临时素材
-        System.err.println(materialService.uploadTemMedia(FileUtils.readFileToByteArray(file), "image", fileName));
+//        System.err.println(materialService.uploadTemMedia(FileUtils.readFileToByteArray(file), "image", file.getName()));
         String mediaId = "GVszSzNE0hOiLiPNydDg_qsysCUboi6D87izofLtEFdkY-EsuZDimBH00UIXz5_9";
 //        System.err.println(materialService.getTemMedia(mediaId));
         //新增永久图文素材
         List<Article> articles = new ArrayList<>();
-        Article article = new Article.Builder("测试测试", "TJ1FmAN2Hjoy1ep6cIyb0T9hIlLmYlB3SXPfU7MI3Hxp2ywPJciWvzU9fj-YKy_m", "1", "测似乎测似乎测似乎测似乎", "https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729").build();
+        Article article = new Article.Builder("测试测试", "iN0DVJWsOA3313LfYphArEGSiI3I6WrMRbX_TCkTlQQ", "1", "测似乎测似乎测似乎测似乎", "https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729").build();
         articles.add(article);
         NewsResponse newsResponse = new NewsResponse(articles);
 //        System.err.println(materialService.addNews(newsResponse));
         //上传图文消息内的图片获取URL
 //        System.err.println(materialService.uploadImg(file));
+//        System.err.println(materialService.addVideo(videoFile,"测试1","说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明"));
+//        System.err.println(materialService.delete("iN0DVJWsOA3313LfYphArKs7TrXiH3V3qWpM-Sk1-7I"));
+//        System.err.println(materialService.addOthers(file, "thumb"));
+        //图文永久素材
+//        String newsMediaId = "iN0DVJWsOA3313LfYphArPp8lDOysXrxQ94Gkh_89Bs";
+//        Article article1 = new Article.Builder("测试修改图文", "iN0DVJWsOA3313LfYphArEGSiI3I6WrMRbX_TCkTlQQ", "1", "测似乎测似乎测似乎测似乎", "https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729", "Alex", "测试修改图文").build();
+//        System.err.println(materialService.updateNews(newsMediaId, "0", article1));
+        //获取永久素材数量
+//        System.err.println(materialService.getMaterialCount());
+        //获取素材列表
+        System.err.println(materialService.getMaterialBatch("image", 0, 20));
     }
 
 }

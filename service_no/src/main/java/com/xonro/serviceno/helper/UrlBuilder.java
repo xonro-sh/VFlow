@@ -271,6 +271,38 @@ public class UrlBuilder {
     public String buildMaterialAddUrl(String type){
         return WechatEnums.URL_MATERIAL_ADD.getValue()+"access_token="+tokenService.getTokenFromCache()+"&type="+type;
     }
+
+    /**
+     * 构建删除永久素材url
+     * @return 构建完成的请求url
+     */
+    public String buildMaterialDelUrl(){
+        return WechatEnums.URL_MATERIAL_DEL.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建修改永久图文素材url
+     * @return 构建完成的请求url
+     */
+    public String buildMaterialUpdateNewsUrl(){
+        return WechatEnums.URL_MATERIAL_UPDATENEWS.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取素材总数url
+     * @return 构建完成的请求url
+     */
+    public String buildMaterialCountUrl(){
+        return WechatEnums.URL_MATERIAL_COUNT.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
+    /**
+     * 构建获取素材列表url
+     * @return 构建完成的请求url
+     */
+    public String buildGetMaterialBatch(){
+        return WechatEnums.URL_MATERIAL_BATCHGET.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
     /**
      * 构建创建含有用户信息二维码的请求url
      * @return
