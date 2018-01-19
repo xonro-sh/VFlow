@@ -18,7 +18,7 @@ public interface CustomService {
      * 增加客服账号 最多能有100个客服
      * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
      * @param nickName 客服昵称
-     * @param password 客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @param password 客服账号登录密码，该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
      * @return 增加客服是否成功
      */
     CustomServiceResult addCustom(@NotNull String kfAccount,@NotNull String nickName, String password);
@@ -27,7 +27,7 @@ public interface CustomService {
      * 修改客服账号
      * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
      * @param nickName 客服昵称
-     * @param password 客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @param password 客服账号登录密码，该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
      * @return 修改客服是否成功
      */
     CustomServiceResult updateCustom(@NotNull String kfAccount,@NotNull String nickName, String password);
@@ -36,7 +36,7 @@ public interface CustomService {
      * 删除客服账号
      * @param kfAccount 完整的客服账号 格式为：账号前缀@公众号微信号
      * @param nickName 客服昵称
-     * @param password 客服账号登录密码，格式为密码明文的32位加密MD5值。该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
+     * @param password 客服账号登录密码，该密码仅用于在公众平台官网的多客服功能中使用，若不使用多客服功能，则不必设置密码
      * @return 删除客服是否成功
      */
     CustomServiceResult delCustom(@NotNull String kfAccount,String nickName, String password);
