@@ -12,11 +12,11 @@ public class Article {
      */
     private String title;
     /**
-     * 标题
+     * 图文消息的封面图片素材id（必须是永久mediaID）
      */
     private String thumbMediaId;
     /**
-     * 标题
+     * 作者
      */
     private String author;
     /**

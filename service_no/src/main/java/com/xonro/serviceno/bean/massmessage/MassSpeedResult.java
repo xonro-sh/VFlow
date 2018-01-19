@@ -7,7 +7,13 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @date 2018/1/15
  */
 public class MassSpeedResult {
+    /**
+     * 群发速度的级别
+     */
     private Integer speed;
+    /**
+     * 群发速度的真实值 单位：万/分钟
+     */
     private Integer realspeed;
     @JSONField(name = "speed")
     public Integer getSpeed() {

@@ -17,7 +17,7 @@ public class MatchRule {
      */
     private String sex;
     /**
-     * 	性别：男（1）女（2），不填则不做匹配
+     * 	客户端版本，当前只具体到系统型号：IOS(1), Android(2),Others(3)，不填则不做匹配
      */
     private String clientPlatformType;
     /**
