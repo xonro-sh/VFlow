@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../../lib/layui/css/layui.css">
     <script src="../../lib/layui/layui.js"></script>
     <link rel="stylesheet" href="../../css/children.css">
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.bootcss.com/echarts/4.0.2/echarts.min.js"></script>
 </head>
 <body class="childrenBody">
 <div class="layui-row layui-col-space20">
@@ -97,6 +99,12 @@
             </table>
         </div>
     </div>
+    <div class="layui-col-md6">
+        <div class="layui-row">
+            <blockquote class="layui-elem-quote">系统监控</blockquote>
+            <div id="main" style="width: 600px;height:400px;"></div>
+        </div>
+    </div>
 </div>
 <script>
     //JavaScript代码区域
@@ -108,6 +116,70 @@
         })
     });
 
+</script>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    var data = [{
+        name: 'Grandpa',
+        children: [{
+            name: 'Uncle Leo',
+            value: 15,
+            children: [{
+                name: 'Cousin Jack',
+                value: 2
+            }, {
+                name: 'Cousin Mary',
+                value: 5,
+                children: [{
+                    name: 'Jackson',
+                    value: 2
+                }]
+            }, {
+                name: 'Cousin Ben',
+                value: 4
+            }]
+        }, {
+            name: 'Father',
+            value: 10,
+            children: [{
+                name: 'Me',
+                value: 5
+            }, {
+                name: 'Brother Peter',
+                value: 1
+            }]
+        }]
+    }, {
+        name: 'Nancy',
+        children: [{
+            name: 'Uncle Nike',
+            children: [{
+                name: 'Cousin Betty',
+                value: 1
+            }, {
+                name: 'Cousin Jenny',
+                value: 2
+            }]
+        }]
+    }];
+
+    option = {
+        series: {
+            type: 'sunburst',
+            // highlightPolicy: 'ancestor',
+            data: data,
+            radius: [0, '90%'],
+            label: {
+                rotate: 'radial'
+            }
+        }
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
 </script>
 </body>
 </html>
