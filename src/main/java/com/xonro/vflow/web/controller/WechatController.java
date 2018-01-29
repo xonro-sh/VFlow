@@ -18,24 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class WechatController {
     @Autowired
     private WechatService wechatService;
-    /**
-     * 更新微信服务号配置
-     * @param data json数据
-     * @return 结果
-     */
-    @RequestMapping(value = "/updateServiceNoConf")
-    public BaseResponse updateServiceNoConf(String data){
-        return wechatService.updateServiceNoConf(JSON.parseObject(data, ServiceNoConf.class));
-    }
-
-    /**
-     * 获取微信服务号配置
-     * @return 结果
-     */
-    @RequestMapping(value = "/getServiceNoConf")
-    public BaseResponse getServiceNoConf(){
-        return wechatService.getServiceNoConf();
-    }
+//    /**
+//     * 更新微信服务号配置
+//     * @param data json数据
+//     * @return 结果
+//     */
+//    @RequestMapping(value = "/updateServiceNoConf")
+//    public BaseResponse updateServiceNoConf(String data){
+//        return wechatService.updateServiceNoConf(JSON.parseObject(data, ServiceNoConf.class));
+//    }
+//
+//    /**
+//     * 获取微信服务号配置
+//     * @return 结果
+//     */
+//    @RequestMapping(value = "/getServiceNoConf")
+//    public BaseResponse getServiceNoConf(){
+//        return wechatService.getServiceNoConf();
+//    }
 
     /**
      * 更新微信支付配置
