@@ -1,6 +1,8 @@
 package com.xonro.serviceno.service;
 
+import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.QrCode;
+import com.xonro.serviceno.bean.config.ServiceNoConf;
 
 /**
  * 公众平台提供的相关服务
@@ -23,4 +25,17 @@ public interface WechatService {
      * @return 二维码图片的字节流
      */
     public byte[] getQrCodeImage(String ticket);
+
+    /**
+     * 更新微信服务号配置
+     * @param serviceNoConf 服务号配置实体
+     * @return 结果
+     */
+    BaseResponse updateServiceNoConf(ServiceNoConf serviceNoConf);
+
+    /**
+     * 获取微信服务号配置
+     * @return 结果
+     */
+    BaseResponse getServiceNoConf();
 }

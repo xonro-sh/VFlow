@@ -1,9 +1,13 @@
 package com.xonro.serviceno.web.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.WechatJsSignature;
+import com.xonro.serviceno.bean.config.ServiceNoConf;
 import com.xonro.serviceno.service.JsApiService;
 import com.xonro.serviceno.service.MessageService;
 import com.xonro.serviceno.service.TokenService;
+import com.xonro.serviceno.service.WechatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/wechat")
-public class WechatController {
+public class WechatController{
     @Autowired
     private TokenService tokenService;
     @Autowired
     private JsApiService jsApiService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private WechatService wechatService;
     /**
      * 微信平台服务器配置签名认证
      * @param signature 微信加密签名
@@ -57,4 +63,22 @@ public class WechatController {
         return messageService.parseMessage(message);
     }
 
+    /**
+     * 更新微信服务号配置
+     * @param data json数据
+     * @return 结果
+     */
+    @RequestMapping(value = "/updateServiceNoConf")
+    public BaseResponse updateServiceNoConf(String data){
+        return wechatService.updateServiceNoConf(JSON.parseObject(data, ServiceNoConf.class));
+    }
+
+    /**
+     * 获取微信服务号配置
+     * @return 结果
+     */
+    @RequestMapping(value = "/getServiceNoConf")
+    public BaseResponse getServiceNoConf(){
+        return wechatService.getServiceNoConf();
+    }
 }
