@@ -45,7 +45,7 @@ public class ServiceNoApplicationTests {
     private MassMessageService massMessageService;
 
     @Autowired
-    private MenuService menuService;
+    private WechatMenuService menuService;
 
     @Autowired
     private MaterialService materialService;
