@@ -1,6 +1,8 @@
 package com.xonro.weixinpay.bean;
 
+import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.weixinpay.helper.VariableHelper;
+import com.xonro.weixinpay.service.PayConfService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.util.Map;
 @Component
 public class PayOrder implements Serializable{
     private VariableHelper variableHelper = new VariableHelper();
+
+    @Autowired
+    private PayConfService payConfService;
     /**
      * 设备号，自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传"WEB"
      */
@@ -70,7 +75,6 @@ public class PayOrder implements Serializable{
     /**
      * 通知地址
      */
-    @Value("${wechat.pay.notify_url}")
     private String notify_url;
     /**
      * 交易类型,取值如下：JSAPI，NATIVE，APP等
@@ -96,7 +100,7 @@ public class PayOrder implements Serializable{
         order.setTotal_fee(totalFee);
         order.setSpbill_create_ip(userIp);
         order.setOpenid(openid);
-        order.setNotify_url(notify_url);
+        order.setNotify_url(payConfService.getConfFromCache().getNotifyUrl());
 
         return variableHelper.removeEmptyValue(order);
     }

@@ -1,8 +1,9 @@
-package com.xonro.vflow.bean.wechat;
+package com.xonro.weixinpay.bean;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 微信支付配置bean
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="xr_wechat_wxpayconf")
-public class WxPayConf {
+public class WxPayConf implements Serializable{
     @Id
     @GenericGenerator(name = "idGenerator",strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")

@@ -5,9 +5,11 @@ import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.xonro.weixinpay.bean.*;
+import com.xonro.weixinpay.dao.WxPayConfRepository;
 import com.xonro.weixinpay.enums.WechatEnum;
 import com.xonro.weixinpay.exception.WxPayException;
 import com.xonro.weixinpay.helper.AesHelper;
+import com.xonro.weixinpay.service.PayConfService;
 import com.xonro.weixinpay.service.PayService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,11 +35,12 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private WXPayConfig wxPayConfig;
 
-    /**
-     * 商户号支付key
-     */
-    @Value("${wechat.pay.key}")
-    private String payKey;
+    @Autowired
+    private WxPayConfRepository wxPayConfRepository;
+
+    @Autowired
+    private PayConfService payConfService;
+
     /**
      * 统一下单
      * @param body 商品描述
@@ -302,7 +306,7 @@ public class PayServiceImpl implements PayService {
             if (wxPay.isPayResultNotifySignatureValid(notifyMap)){
                 //获取加密信息
                 String reqInfo = notifyMap.get("req_info");
-                String reqInfoDecode = aesHelper.decryptData(reqInfo, payKey);
+                String reqInfoDecode = aesHelper.decryptData(reqInfo, payConfService.getConfFromCache().getApiKey());
                 Map<String, String> refundMap = WXPayUtil.xmlToMap(reqInfoDecode);
                 //退款状态
                 String resultCode = refundMap.get("refund_status");
@@ -346,6 +350,47 @@ public class PayServiceImpl implements PayService {
             logger.error(e.getMessage(),e);
         }
         return null;
+    }
+
+    /**
+     * 更新微信支付配置
+     *
+     * @param wxPayConf 微信支付配置实体
+     * @return 结果模型
+     */
+    @Override
+    public BaseResponse updateWxPayConf(WxPayConf wxPayConf) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            wxPayConfRepository.save(wxPayConf);
+        } catch (Exception e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
+    }
+
+    /**
+     * 获取微信支付配置
+     *
+     * @return 结果模型
+     */
+    @Override
+    public BaseResponse getWxPayConf() {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            List<WxPayConf> wxPayConfList = wxPayConfRepository.findAll();
+            baseResponse.setData(null);
+            if (wxPayConfList.size()!=0){
+                baseResponse.setData(wxPayConfList.get(0));
+            }
+        } catch (Exception e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
     }
 
     /**

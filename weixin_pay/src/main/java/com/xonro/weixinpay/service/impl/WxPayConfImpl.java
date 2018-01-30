@@ -1,7 +1,12 @@
 package com.xonro.weixinpay.service.impl;
 
 import com.github.wxpay.sdk.WXPayConfig;
+import com.xonro.serviceno.bean.config.ServiceNoConf;
+import com.xonro.serviceno.service.ServiceNoConfService;
+import com.xonro.weixinpay.service.PayConfService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -11,25 +16,12 @@ import java.io.InputStream;
  * @author Alex
  * @date 2018/1/2
  */
-@Service
+@Component
 public class WxPayConfImpl implements WXPayConfig{
-    /**
-     * 公众账号ID
-     */
-    @Value("${wechat.appId}")
-    private String appId;
-
-    /**
-     * 商户号
-     */
-    @Value("${wechat.pay.mch_id}")
-    private String mchId;
-
-    /**
-     * 商户号支付key
-     */
-    @Value("${wechat.pay.key}")
-    private String payKey;
+    @Autowired
+    private PayConfService payConfService;
+    @Autowired
+    private ServiceNoConfService serviceNoConfService;
 
     private InputStream inputStream = WxPayConfImpl.class.getClassLoader().getResourceAsStream("apiclient_cert.p12");
 
@@ -38,17 +30,17 @@ public class WxPayConfImpl implements WXPayConfig{
 
     @Override
     public String getAppID() {
-        return this.appId;
+        return serviceNoConfService.getConfFromCache().getAppId();
     }
 
     @Override
     public String getMchID() {
-        return this.mchId;
+        return payConfService.getConfFromCache().getMchId();
     }
 
     @Override
     public String getKey() {
-        return this.payKey;
+        return payConfService.getConfFromCache().getApiKey();
     }
 
     @Override

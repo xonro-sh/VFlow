@@ -1,13 +1,18 @@
-package com.xonro.vflow.dao.wechatdao;
+package com.xonro.weixinpay.dao;
 
-import com.xonro.vflow.bean.wechat.WxPayConf;
+import com.xonro.weixinpay.bean.WxPayConf;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Alex
  * @date 2018/1/25
  */
+@CacheConfig(cacheNames = "wxpay")
 @Repository
 public interface WxPayConfRepository extends JpaRepository<WxPayConf, Long>{
     /**
@@ -16,4 +21,8 @@ public interface WxPayConfRepository extends JpaRepository<WxPayConf, Long>{
      * @return 结果模型
      */
     WxPayConf findById(String id);
+
+    @Override
+    @Cacheable
+    List<WxPayConf> findAll();
 }

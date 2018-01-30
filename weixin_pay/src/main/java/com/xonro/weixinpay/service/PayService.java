@@ -116,4 +116,17 @@ public interface PayService {
      * @return 返回结果
      */
     ReportResult report(ReportRequestParam reportRequestParam);
+
+    /**
+     * 更新微信支付配置
+     * @param wxPayConf 微信支付配置实体
+     * @return 结果模型
+     */
+    BaseResponse updateWxPayConf(WxPayConf wxPayConf);
+
+    /**
+     * 获取微信支付配置
+     * @return 结果模型
+     */
+    BaseResponse getWxPayConf();
 }

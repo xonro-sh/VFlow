@@ -1,6 +1,9 @@
 package com.xonro.weixinpay.web;
 
+import com.alibaba.fastjson.JSON;
+import com.xonro.weixinpay.bean.BaseResponse;
 import com.xonro.weixinpay.bean.PayOrderResult;
+import com.xonro.weixinpay.bean.WxPayConf;
 import com.xonro.weixinpay.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +33,24 @@ public class PayController {
     @RequestMapping(value = "/payOrder")
     public PayOrderResult createPayOrder(@RequestParam String body, @RequestParam String tradeNo, @RequestParam Integer totalFee, String openId){
         return payService.payOrder(body,tradeNo, totalFee, openId);
+    }
+
+    /**
+     * 更新微信支付配置
+     * @param data json数据
+     * @return 结果
+     */
+    @RequestMapping(value = "/updateWxPayConf")
+    public BaseResponse updateWxPayConf(String data){
+        return payService.updateWxPayConf(JSON.parseObject(data, WxPayConf.class));
+    }
+
+    /**
+     * 获取微信支付配置
+     * @return 结果
+     */
+    @RequestMapping(value = "/getWxPayConf")
+    public BaseResponse getWxPayConf(){
+        return payService.getWxPayConf();
     }
 }
