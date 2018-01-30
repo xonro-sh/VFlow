@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
  * @author Alex
  * @date 2018/1/8
  */
-@Configuration
-@EnableCaching
+//@Configuration
+//@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
 
     @Autowired
