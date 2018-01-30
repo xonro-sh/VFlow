@@ -9,7 +9,7 @@ import com.xonro.serviceno.exception.WechatException;
  * @author Alex
  * @date 2018/1/16
  */
-public interface MenuService {
+public interface WechatMenuService {
     /**
      * 创建菜单
      * @param button 菜单按钮
