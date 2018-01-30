@@ -3,6 +3,7 @@ package com.xonro.serviceno.bean.config;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 公众号配置bean
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="xr_wechat_servicenoconf")
-public class ServiceNoConf {
+public class ServiceNoConf implements Serializable{
     @Id
     @GenericGenerator(name = "idGenerator",strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
