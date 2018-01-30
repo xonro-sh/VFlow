@@ -6,7 +6,7 @@ import com.xonro.serviceno.bean.menu.Button;
 import com.xonro.serviceno.bean.menu.MenuResult;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
-import com.xonro.serviceno.service.MenuService;
+import com.xonro.serviceno.service.WechatMenuService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * @date 2018/1/16
  */
 @Service
-public class MenuServiceImpl implements MenuService{
+public class WechatMenuServiceImpl implements WechatMenuService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UrlBuilder urlBuilder;

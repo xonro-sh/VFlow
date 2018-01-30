@@ -3,6 +3,7 @@ package com.xonro.serviceno.service.impl;
 import com.xonro.serviceno.bean.WechatAccessToken;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
+import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -23,9 +24,8 @@ import java.util.Arrays;
 @Service
 public class TokenServiceImpl implements TokenService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Value("${wechat.token}")
-    private String wechatToken;
+    @Autowired
+    ServiceNoConfService serviceNoConfService;
     @Autowired
     private UrlBuilder urlBuilder;
 
@@ -40,7 +40,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     public String checkSignature(String signature, Long timestamp, String nonce, String echostr) {
-        String[] array = new String[]{timestamp+"",nonce,wechatToken};
+        String[] array = new String[]{timestamp+"",nonce, serviceNoConfService.getConfFromCache().getToken()};
         Arrays.sort(array);
 
         StringBuilder builder = new StringBuilder();
@@ -78,7 +78,7 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @CachePut(value = "tokenCache",key = "wechatToken")
-    private void cacheToken(WechatAccessToken token){
+    public void cacheToken(WechatAccessToken token){
         tokenCache = token;
     }
 

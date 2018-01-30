@@ -5,6 +5,7 @@ import com.xonro.serviceno.bean.WechatJsSignature;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.JsApiService;
+import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,6 +28,9 @@ public class JsApiServiceImpl implements JsApiService {
 
     @Autowired
     private UrlBuilder urlBuilder;
+
+    @Autowired
+    ServiceNoConfService serviceNoConfService;
 
     private WechatJsApiTicket jsApiTicket;
 
@@ -68,8 +72,6 @@ public class JsApiServiceImpl implements JsApiService {
         }
     }
 
-    @Value("${wechat.appId}")
-    private String appId;
 
     /**
      * 生成指定url地址的js signature
@@ -91,7 +93,7 @@ public class JsApiServiceImpl implements JsApiService {
 
             String signature = DigestUtils.sha1Hex(stringBuilder);
             WechatJsSignature jsSignature = new WechatJsSignature();
-            jsSignature.setAppId(appId);
+            jsSignature.setAppId(serviceNoConfService.getConfFromCache().getAppId());
             jsSignature.setNonceStr(noncestr);
             jsSignature.setSignature(signature);
             jsSignature.setTimestamp(timestamp);
