@@ -21,8 +21,8 @@ public class WeixinPayApplicationTests {
 	/**
 	 * 商户号支付key
 	 */
-	@Value("${wechat.pay.key}")
-	private String payKey;
+//	@Value("${wechat.pay.key}")
+//	private String payKey;
 
 	@Test
 	public void contextLoads() {
@@ -40,15 +40,15 @@ public class WeixinPayApplicationTests {
 //				10,10,"","","");
 
 //		//下载对账单
-//		payService.downloadBill("20171227", " ALL");
+		payService.downloadBill("20171227", " ALL");
 //		//用微信订单号查询退款
 //		payService.refundQueryByTransactionId("4200000033201712272251643207", "");
-		AesHelper aesHelper =new AesHelper();
-		try {
-			System.err.println(aesHelper.encryptData("2345", payKey));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		AesHelper aesHelper =new AesHelper();
+//		try {
+//			System.err.println(aesHelper.encryptData("2345", payKey));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 }
