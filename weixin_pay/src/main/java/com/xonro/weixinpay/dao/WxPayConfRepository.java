@@ -12,7 +12,6 @@ import java.util.List;
  * @author Alex
  * @date 2018/1/25
  */
-@CacheConfig(cacheNames = "wxpay")
 @Repository
 public interface WxPayConfRepository extends JpaRepository<WxPayConf, Long>{
     /**
@@ -21,8 +20,4 @@ public interface WxPayConfRepository extends JpaRepository<WxPayConf, Long>{
      * @return 结果模型
      */
     WxPayConf findById(String id);
-
-    @Override
-    @Cacheable
-    List<WxPayConf> findAll();
 }

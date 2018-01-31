@@ -4,7 +4,9 @@ import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
+import com.xonro.serviceno.bean.TableResponse;
 import com.xonro.weixinpay.bean.*;
+import com.xonro.weixinpay.dao.BillRepository;
 import com.xonro.weixinpay.dao.WxPayConfRepository;
 import com.xonro.weixinpay.enums.WechatEnum;
 import com.xonro.weixinpay.exception.WxPayException;
@@ -17,10 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +47,8 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private PayConfService payConfService;
 
+    @Autowired
+    private BillRepository billRepository;
     /**
      * 统一下单
      * @param body 商品描述
@@ -73,15 +81,15 @@ public class PayServiceImpl implements PayService {
      * @return 订单信息
      */
     @Override
-    public Map<String, String> orderQueryByTransactionId(@NotNull String transactionId){
+    public Map<String, String> orderQueryByTransactionId(@NotNull String transactionId) throws WxPayException {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
             Map<String, String> p = new OrderQuery().getOrderQueryByTransactionId(transactionId);
             return wxPay.orderQuery(p);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
+            throw new WxPayException("01", "查询订单失败，错误信息："+e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -90,15 +98,15 @@ public class PayServiceImpl implements PayService {
      * @return 订单信息
      */
     @Override
-    public Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo) {
+    public Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo) throws WxPayException {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
             Map<String, String> p = new OrderQuery().getOrderQueryByOutTradeNo(outTradeNo);
             return wxPay.orderQuery(p);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
+            throw new WxPayException("01", "查询订单失败，错误信息："+e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -248,7 +256,7 @@ public class PayServiceImpl implements PayService {
         WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
         try {
             Map<String, String> p = new DownloadBill().getDownloadBillByDateAndType(billDate, billType);
-            System.err.println("wxPay.downloadBill(p);"+wxPay.downloadBill(p));
+            System.err.println("wxPay.downloadBill(p);"+wxPay.downloadBill(p).get("data"));
             return wxPay.downloadBill(p);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -392,6 +400,122 @@ public class PayServiceImpl implements PayService {
         }
         return baseResponse;
     }
+
+    /**
+     * 获取对账单
+     * @param billDate 对账单日期
+     * @param page 第几页
+     * @param rows 每页数据
+     * @return 对账单数据
+     */
+    @Override
+    public TableResponse getWxBill(String billDate, Integer page, Integer rows) {
+        Pageable pages = new PageRequest(page-1, rows);
+        TableResponse tableResponse = new TableResponse();
+        tableResponse.setCode(0);
+        tableResponse.setMsg("");
+        Page<Bill> bills;
+        if (StringUtils.isNotEmpty(billDate)){
+            bills = billRepository.findByBillDate(billDate, pages);
+            if (bills.getTotalElements() != 0){
+                tableResponse.setCount(bills.getTotalElements());
+                tableResponse.setData(bills.getContent());
+            } else {
+                //获取全部对账单
+                Map<String, String> billData = downloadBill(billDate, WechatEnum.BILL_TYPE_ALL.getValue());
+                String reCode = billData.get("return_code");
+                if (StringUtils.isNotEmpty(reCode) && WechatEnum.RETURN_CODE_SUCCESS.getValue().equals(reCode)){
+                    String data = billData.get("data");
+                    if (StringUtils.isNotEmpty(data)){
+                        billRepository.save(formatBillDataToList(data,billDate));
+                    }
+                } else {
+                    tableResponse.setMsg(StringUtils.isNotEmpty(billData.get("return_msg"))?billData.get("return_msg"):"查找对账单失败");
+                }
+            }
+            //再获取一次账单数据
+            bills = billRepository.findByBillDate(billDate, pages);
+        } else {
+            bills = billRepository.findAll(pages);
+        }
+        tableResponse.setCount(bills.getTotalElements());
+        tableResponse.setData(bills.getContent());
+        return tableResponse;
+    }
+
+    /**
+     * 格式化获取的账单数据
+     * @param billData 账单数据
+     * @param billDate 账单日期
+     * @return 格式化后的账单数据
+     */
+    private List<Bill> formatBillDataToList(String billData, String billDate) {
+        String data1 = billData.replaceAll("%", "%,");
+        String data2 = data1.substring(data1.indexOf("费率")+2,data1.length());
+        String data3 = data2.substring(0,data2.indexOf("总"));
+        String data4 = data3.replaceAll("`", "");
+        String[] dataArray = data4.split(",");
+        List<Bill> bills = new ArrayList<>();
+        int num = dataArray.length / 24;
+        for (int i = 1; i<=num; i++ ){
+            for (int j = i * 24 - 24; j < i * 24; j++) {
+                System.err.println(dataArray[j]);
+                Bill bill = new Bill();
+                bill.setBillDate(billDate);
+                bill.setTradeTime(dataArray[j]);
+                j++;
+                bill.setAppId(dataArray[j]);
+                j++;
+                bill.setMchId(dataArray[j]);
+                j++;
+                bill.setSubMchId(dataArray[j]);
+                j++;
+                bill.setDeviceId(dataArray[j]);
+                j++;
+                bill.setTransactionId(dataArray[j]);
+                j++;
+                bill.setOutTradeNo(dataArray[j]);
+                j++;
+                bill.setOpenId(dataArray[j]);
+                j++;
+                bill.setTradeType(dataArray[j]);
+                j++;
+                bill.setTradeStatus(dataArray[j]);
+                j++;
+                bill.setBank(dataArray[j]);
+                j++;
+                bill.setFeeType(dataArray[j]);
+                j++;
+                bill.setTotalFee(dataArray[j]);
+                j++;
+                bill.setRedpacketFee(dataArray[j]);
+                j++;
+                bill.setRefundId(dataArray[j]);
+                j++;
+                bill.setOutRefundNo(dataArray[j]);
+                j++;
+                bill.setRefundFee(dataArray[j]);
+                j++;
+                bill.setRedpacketRefund(dataArray[j]);
+                j++;
+                bill.setRefundType(dataArray[j]);
+                j++;
+                bill.setRefundStatus(dataArray[j]);
+                j++;
+                bill.setBody(dataArray[j]);
+                j++;
+                bill.setDataPacket(dataArray[j]);
+                j++;
+                bill.setFee(dataArray[j]);
+                j++;
+                bill.setRate(dataArray[j]);
+                bills.add(bill);
+            }
+
+        }
+        return bills;
+    }
+
 
     /**
      * 校验微信支付接口响应是否正确

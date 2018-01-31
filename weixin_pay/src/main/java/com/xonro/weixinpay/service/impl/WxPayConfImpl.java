@@ -1,13 +1,10 @@
 package com.xonro.weixinpay.service.impl;
 
 import com.github.wxpay.sdk.WXPayConfig;
-import com.xonro.serviceno.bean.config.ServiceNoConf;
 import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.weixinpay.service.PayConfService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;

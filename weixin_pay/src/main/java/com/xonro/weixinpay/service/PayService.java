@@ -1,6 +1,8 @@
 package com.xonro.weixinpay.service;
 
+import com.xonro.serviceno.bean.TableResponse;
 import com.xonro.weixinpay.bean.*;
+import com.xonro.weixinpay.exception.WxPayException;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -26,14 +28,14 @@ public interface PayService {
      * @param transactionId 微信订单号
      * @return 订单信息
      */
-    Map<String, String> orderQueryByTransactionId(@NotNull String transactionId);
+    Map<String, String> orderQueryByTransactionId(@NotNull String transactionId) throws WxPayException;
 
     /**
      * 用商户订单号来查询订单
      * @param outTradeNo 商户订单号
      * @return 订单信息
      */
-    Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo);
+    Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo) throws WxPayException;
 
     /**
      * 用商户订单号来关闭订单
@@ -129,4 +131,11 @@ public interface PayService {
      * @return 结果模型
      */
     BaseResponse getWxPayConf();
+
+    /**
+     * 获取对账单
+     * @param billDate 对账单日期
+     * @return 对账单数据
+     */
+    TableResponse getWxBill(String billDate, Integer page, Integer rows);
 }

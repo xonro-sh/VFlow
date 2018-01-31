@@ -1,9 +1,11 @@
 package com.xonro.weixinpay.web;
 
 import com.alibaba.fastjson.JSON;
+import com.xonro.serviceno.bean.TableResponse;
 import com.xonro.weixinpay.bean.BaseResponse;
 import com.xonro.weixinpay.bean.PayOrderResult;
 import com.xonro.weixinpay.bean.WxPayConf;
+import com.xonro.weixinpay.exception.WxPayException;
 import com.xonro.weixinpay.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
+@RequestMapping(value = "/wechat")
 public class PayController {
     @Autowired
     private PayService payService;
@@ -52,5 +55,24 @@ public class PayController {
     @RequestMapping(value = "/getWxPayConf")
     public BaseResponse getWxPayConf(){
         return payService.getWxPayConf();
+    }
+
+    @RequestMapping(value = "/getWxBill")
+    public String getWxBill(String billDate, Integer page, Integer limit){
+        return JSON.toJSONString(payService.getWxBill(billDate, page, limit));
+    }
+
+    @RequestMapping(value = "/getOrderByTransactionId")
+    public BaseResponse getOrderByTransactionId(String transactionId){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            baseResponse.setData(payService.orderQueryByTransactionId(transactionId));
+        } catch (WxPayException e) {
+            baseResponse.setOk(false);
+            baseResponse.setCode(e.getErrorCode());
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
     }
 }

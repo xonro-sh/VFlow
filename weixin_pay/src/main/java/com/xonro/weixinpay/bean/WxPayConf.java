@@ -29,6 +29,10 @@ public class WxPayConf implements Serializable{
      * 微信通知地址
      */
     private String notifyUrl;
+    /**
+     * 是否使用沙箱
+     */
+    private boolean useSandbox;
     @Column(name = "id")
     public String getId() {
         return id;
@@ -62,5 +66,14 @@ public class WxPayConf implements Serializable{
 
     public void setNotifyUrl(String notifyUrl) {
         this.notifyUrl = notifyUrl;
+    }
+
+    @Column(name = "useSandbox")
+    public boolean getUseSandbox() {
+        return useSandbox;
+    }
+
+    public void setUseSandbox(boolean useSandbox) {
+        this.useSandbox = useSandbox;
     }
 }
