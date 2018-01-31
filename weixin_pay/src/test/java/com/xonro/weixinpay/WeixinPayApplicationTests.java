@@ -2,6 +2,7 @@ package com.xonro.weixinpay;
 
 import com.xonro.weixinpay.bean.RefundByOutTradeNo;
 import com.xonro.weixinpay.bean.RefundByTransactionId;
+import com.xonro.weixinpay.exception.WxPayException;
 import com.xonro.weixinpay.helper.AesHelper;
 import com.xonro.weixinpay.service.PayService;
 import org.junit.Test;
@@ -25,9 +26,9 @@ public class WeixinPayApplicationTests {
 //	private String payKey;
 
 	@Test
-	public void contextLoads() {
+	public void contextLoads() throws WxPayException {
 //		//用微信订单号测试查询订单
-//		payService.orderQueryByTransactionId("4200000033201712272251643207");
+		System.err.println(payService.orderQueryByTransactionId("4200000033201712272251643207"));;
 //		//用商户订单号测试查询订单
 //		payService.orderQueryByOutTradeNo("WedoOrderCfp_201712000000000503");
 //		//用商户订单号测试关闭订单
@@ -40,7 +41,7 @@ public class WeixinPayApplicationTests {
 //				10,10,"","","");
 
 //		//下载对账单
-		payService.downloadBill("20171227", " ALL");
+//		payService.downloadBill("20171228", " ALL");
 //		//用微信订单号查询退款
 //		payService.refundQueryByTransactionId("4200000033201712272251643207", "");
 //		AesHelper aesHelper =new AesHelper();
