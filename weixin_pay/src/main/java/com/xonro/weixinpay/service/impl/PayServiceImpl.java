@@ -59,7 +59,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public PayOrderResult payOrder(@NotNull String body, String tradeNo, Integer totalFee, String openId){
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             String ip = InetAddress.getLocalHost().getHostAddress();
             Map<String, String> p = new PayOrder().getDefaultOrderDatas(body,tradeNo,totalFee,ip,openId);
@@ -82,7 +82,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> orderQueryByTransactionId(@NotNull String transactionId) throws WxPayException {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new OrderQuery().getOrderQueryByTransactionId(transactionId);
             return wxPay.orderQuery(p);
@@ -99,7 +99,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> orderQueryByOutTradeNo(@NotNull String outTradeNo) throws WxPayException {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new OrderQuery().getOrderQueryByOutTradeNo(outTradeNo);
             return wxPay.orderQuery(p);
@@ -117,7 +117,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public CloseOrderResult closeOrderByOutTradeNo(@NotNull String outTradeNo) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new CloseOrder().getCloseOrderByOutTradeNo(outTradeNo);
             Map<String, String> resData = wxPay.closeOrder(p);
@@ -140,7 +140,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundByTransactionId(RefundByTransactionId refundByTransactionId) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new Refund().refundByTransactionId(refundByTransactionId);
             return wxPay.refund(p);
@@ -158,7 +158,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundByOutTradeNo(RefundByOutTradeNo refundByOutTradeNo) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new Refund().refundByOutTradeNo(refundByOutTradeNo);
             return wxPay.refund(p);
@@ -177,7 +177,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundQueryByTransactionId(@NotNull String transactionId, String offset) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new RefundQuery().getRefundQueryByTransactionId(transactionId, offset);
             System.err.println(""+wxPay.refundQuery(p));
@@ -197,7 +197,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundQueryByOutTradeNo(@NotNull String outTradeNo, String offset) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new RefundQuery().getRefundQueryByOutTradeNo(outTradeNo, offset);
             return wxPay.refundQuery(p);
@@ -216,7 +216,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundQueryByOutRefundNo(@NotNull String outRefundNo, String offset) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new RefundQuery().getRefundQueryByOutRefundNo(outRefundNo, offset);
             return wxPay.refundQuery(p);
@@ -235,7 +235,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> refundQueryByRefundId(@NotNull String refundId, String offset) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new RefundQuery().getRefundQueryByRefundId(refundId, offset);
             return wxPay.refundQuery(p);
@@ -253,7 +253,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public Map<String, String> downloadBill(@NotNull String billDate, @NotNull String billType) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new DownloadBill().getDownloadBillByDateAndType(billDate, billType);
             System.err.println("wxPay.downloadBill(p);"+wxPay.downloadBill(p).get("data"));
@@ -345,7 +345,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public ReportResult report(ReportRequestParam reportRequestParam) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, false);
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
         try {
             Map<String, String> p = new Report().getReport(reportRequestParam);
             Map<String, String> resData = wxPay.report(p);
