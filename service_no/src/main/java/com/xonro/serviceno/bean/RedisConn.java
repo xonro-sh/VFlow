@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @date 2018/1/8
  */
 @Component
-@ConfigurationProperties(prefix = "spring.redis")
+//@ConfigurationProperties(prefix = "spring.redis")
 public class RedisConn {
     private String host;
 

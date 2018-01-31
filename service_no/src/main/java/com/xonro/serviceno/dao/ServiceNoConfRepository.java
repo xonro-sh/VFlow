@@ -12,7 +12,6 @@ import java.util.List;
  * @author Alex
  * @date 2018/1/25
  */
-@CacheConfig(cacheNames = "serviceno")
 @Repository
 public interface ServiceNoConfRepository extends JpaRepository<ServiceNoConf, Long> {
     /**
@@ -22,6 +21,4 @@ public interface ServiceNoConfRepository extends JpaRepository<ServiceNoConf, Lo
      */
     ServiceNoConf findById(String id);
 
-    @Cacheable
-    List<ServiceNoConf> findAll();
 }

@@ -9,6 +9,7 @@ import com.xonro.serviceno.service.MessageService;
 import com.xonro.serviceno.service.TokenService;
 import com.xonro.serviceno.service.WechatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author louie modified by Alex
  * @date 2018-1-3
  */
+@EnableAutoConfiguration
 @RestController
 @RequestMapping(value = "/wechat")
 public class WechatController{
