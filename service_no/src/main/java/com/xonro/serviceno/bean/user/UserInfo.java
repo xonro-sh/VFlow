@@ -1,5 +1,8 @@
 package com.xonro.serviceno.bean.user;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -84,6 +87,7 @@ public class UserInfo implements Serializable{
      * 用户被打上的标签ID列表
      */
     private String tagid_list;
+    
 
     public Integer getSubscribe() {
         return subscribe;
@@ -196,4 +200,6 @@ public class UserInfo implements Serializable{
     public void setTagid_list(String tagid_list) {
         this.tagid_list = tagid_list;
     }
+
+
 }

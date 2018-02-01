@@ -28,7 +28,7 @@ public class UrlBuilder {
      * @return 构建完成的请求url
      */
     public String buildGetTokenUrl(){
-        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ serviceNoConfService.getConfFromCache().getAppId() +"&secret="+serviceNoConfService.getConfFromCache().getToken();
+        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ serviceNoConfService.getConfFromCache().getAppId() +"&secret="+serviceNoConfService.getConfFromCache().getAppSecret();
     }
 
     /**
@@ -319,6 +319,23 @@ public class UrlBuilder {
      */
     public String buildQrCodeImageUrl(String ticket){
         return WechatEnums.URL_QRCODE_IMAGE.getValue()+"ticket="+ticket;
+    }
+
+    /**
+     * 构建获取用户列表的请求url
+     * @param openId 起始的openId
+     * @return 构建完成的url
+     */
+    public String buildGetUserListUrl(String openId){
+        return WechatEnums.URL_USER_LIST.getValue()+"access_token="+tokenService.getTokenFromCache()+"&next_openid="+openId;
+    }
+
+    /**
+     * 构建获取用户列表信息的请求url
+     * @return 构建完成的url
+     */
+    public String buildGetUserInfoBatchUrl(){
+        return WechatEnums.URL_USER_BATCHINFO.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
 
 }

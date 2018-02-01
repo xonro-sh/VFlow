@@ -2,6 +2,9 @@ package com.xonro.serviceno.service;
 
 
 import com.xonro.serviceno.bean.user.UserInfo;
+import com.xonro.serviceno.exception.WechatException;
+
+import java.util.List;
 
 /**
  * 用户管理相关业务服务接口
@@ -28,4 +31,15 @@ public interface UserService {
      * @param userInfo 需删除的用户信息
      */
     public void deleteUser(UserInfo userInfo);
+
+    /**
+     * 批量获取用户基本信息
+     * @param openId 普通用户的标识，对当前公众号唯一
+     * @return
+     */
+    public List<UserInfo> getUserInfoList(String openId) throws WechatException;
+
+    public List<UserInfo> updateUserPut(String openId) throws WechatException;
+
+    public List<UserInfo> getUser(String openId) throws WechatException;
 }

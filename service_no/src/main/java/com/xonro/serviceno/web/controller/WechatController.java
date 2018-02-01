@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.WechatJsSignature;
 import com.xonro.serviceno.bean.config.ServiceNoConf;
-import com.xonro.serviceno.service.JsApiService;
-import com.xonro.serviceno.service.MessageService;
-import com.xonro.serviceno.service.TokenService;
-import com.xonro.serviceno.service.WechatService;
+import com.xonro.serviceno.exception.WechatException;
+import com.xonro.serviceno.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +30,8 @@ public class WechatController{
     private MessageService messageService;
     @Autowired
     private WechatService wechatService;
+    @Autowired
+    private UserService userService;
     /**
      * 微信平台服务器配置签名认证
      * @param signature 微信加密签名
@@ -82,5 +82,31 @@ public class WechatController{
     @RequestMapping(value = "/getServiceNoConf")
     public BaseResponse getServiceNoConf(){
         return wechatService.getServiceNoConf();
+    }
+
+    @RequestMapping(value = "/getUserInfoList")
+    public BaseResponse getUserInfoList(String openId){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            baseResponse.setData(JSON.toJSONString(userService.getUser(openId)));
+        } catch (WechatException e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
+    }
+
+    @RequestMapping(value = "/refreshUserInfoList")
+    public BaseResponse refreshUserInfoList(String openId){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            baseResponse.setData(JSON.toJSONString(userService.updateUserPut(openId)));
+        } catch (WechatException e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
     }
 }
