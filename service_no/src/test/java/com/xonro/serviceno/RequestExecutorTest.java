@@ -4,6 +4,7 @@ import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
 import com.xonro.serviceno.service.TokenService;
+import com.xonro.serviceno.service.UserService;
 import com.xonro.serviceno.service.WechatService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.io.FileUtils;
@@ -34,6 +35,9 @@ public class RequestExecutorTest {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UserService userService;
+
     @Test
     public void testGetRequest() throws IOException, WechatException {
         String url = urlBuilder.buildGetTokenUrl();
@@ -53,6 +57,11 @@ public class RequestExecutorTest {
         byte[] fileData = FileUtils.readFileToByteArray(new File("D:\\1.jpg"));
         String result = new RequestExecutor(url).upload("1.jpg",fileData).getResponseAsObject(String.class);
         System.out.println(result);
+    }
+
+    @Test
+    public void testBatchUserIfo() throws WechatException {
+        userService.getUserInfoList("");
     }
 
 }
