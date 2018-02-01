@@ -135,7 +135,10 @@ public interface PayService {
     /**
      * 获取对账单
      * @param billDate 对账单日期
+     * @param billType 账单类型
+     * @param page 第几页
+     * @param rows 每页数据
      * @return 对账单数据
      */
-    TableResponse getWxBill(String billDate, Integer page, Integer rows);
+    TableResponse getWxBill(String billDate, String billType, Integer page, Integer rows);
 }

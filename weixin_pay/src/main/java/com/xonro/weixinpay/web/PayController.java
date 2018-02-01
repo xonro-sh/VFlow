@@ -5,6 +5,7 @@ import com.xonro.serviceno.bean.TableResponse;
 import com.xonro.weixinpay.bean.BaseResponse;
 import com.xonro.weixinpay.bean.PayOrderResult;
 import com.xonro.weixinpay.bean.WxPayConf;
+import com.xonro.weixinpay.enums.WechatEnum;
 import com.xonro.weixinpay.exception.WxPayException;
 import com.xonro.weixinpay.service.PayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,11 +58,23 @@ public class PayController {
         return payService.getWxPayConf();
     }
 
+    /**
+     * 获取对账单 (全部)
+     * @param billDate 对账单日期
+     * @param page 第几页
+     * @param limit 每页数据
+     * @return 对账单数据
+     */
     @RequestMapping(value = "/getWxBill")
     public String getWxBill(String billDate, Integer page, Integer limit){
-        return JSON.toJSONString(payService.getWxBill(billDate, page, limit));
+        return JSON.toJSONString(payService.getWxBill(billDate,  WechatEnum.BILL_TYPE_ALL.getValue(),page, limit));
     }
 
+    /**
+     * 用微信订单号来查询订单
+     * @param transactionId 微信订单号
+     * @return 订单信息
+     */
     @RequestMapping(value = "/getOrderByTransactionId")
     public BaseResponse getOrderByTransactionId(String transactionId){
         BaseResponse baseResponse = new BaseResponse();

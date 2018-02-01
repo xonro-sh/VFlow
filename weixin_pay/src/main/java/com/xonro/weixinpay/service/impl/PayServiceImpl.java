@@ -345,7 +345,7 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     public ReportResult report(ReportRequestParam reportRequestParam) {
-        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox());
+        WXPay wxPay = new WXPay(wxPayConfig, WXPayConstants.SignType.MD5, payConfService.getConfFromCache().getUseSandbox()                                                                                                                                                                                                                                                                                                                                                                                                                     );
         try {
             Map<String, String> p = new Report().getReport(reportRequestParam);
             Map<String, String> resData = wxPay.report(p);
@@ -404,12 +404,13 @@ public class PayServiceImpl implements PayService {
     /**
      * 获取对账单
      * @param billDate 对账单日期
+     * @param billType 账单类型
      * @param page 第几页
      * @param rows 每页数据
      * @return 对账单数据
      */
     @Override
-    public TableResponse getWxBill(String billDate, Integer page, Integer rows) {
+    public TableResponse getWxBill(String billDate, String billType, Integer page, Integer rows) {
         Pageable pages = new PageRequest(page-1, rows);
         TableResponse tableResponse = new TableResponse();
         tableResponse.setCode(0);
@@ -422,7 +423,7 @@ public class PayServiceImpl implements PayService {
                 tableResponse.setData(bills.getContent());
             } else {
                 //获取全部对账单
-                Map<String, String> billData = downloadBill(billDate, WechatEnum.BILL_TYPE_ALL.getValue());
+                Map<String, String> billData = downloadBill(billDate, billType);
                 String reCode = billData.get("return_code");
                 if (StringUtils.isNotEmpty(reCode) && WechatEnum.RETURN_CODE_SUCCESS.getValue().equals(reCode)){
                     String data = billData.get("data");
