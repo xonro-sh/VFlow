@@ -109,4 +109,27 @@ public class WechatController{
         }
         return baseResponse;
     }
+
+    /**
+     * 更新用户备注
+     * @param openId 普通用户的标识，对当前公众号唯一
+     * @param remark 备注
+     * @return
+     */
+    @RequestMapping(value = "/updateRemark")
+    public BaseResponse updateRemark(String openId, String remark){
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            //更新缓存
+            userService.reload();
+            baseResponse.setData(JSON.toJSONString(userService.updateUserPutByRemark(userService.updateRemark(openId, remark))));
+            return baseResponse;
+        } catch (WechatException e) {
+            baseResponse.setOk(false);
+            baseResponse.setCode(e.getErrorCode());
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
+    }
 }

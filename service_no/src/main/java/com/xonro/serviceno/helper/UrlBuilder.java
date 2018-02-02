@@ -338,4 +338,12 @@ public class UrlBuilder {
         return WechatEnums.URL_USER_BATCHINFO.getValue()+"access_token="+tokenService.getTokenFromCache();
     }
 
+    /**
+     * 构建更新用户备注的请求url
+     * @return
+     */
+    public String buildUpdateRemarkUrl(){
+        return WechatEnums.URL_USER_UPDATEREMARK.getValue()+"access_token="+tokenService.getTokenFromCache();
+    }
+
 }

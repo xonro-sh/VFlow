@@ -42,6 +42,7 @@ public enum WechatEnums {
     URL_USER_INFO("https://api.weixin.qq.com/cgi-bin/user/info?","通过OpenID来获取用户基本信息"),
     URL_USER_LIST("https://api.weixin.qq.com/cgi-bin/user/get?","获取用户列表"),
     URL_USER_BATCHINFO("https://api.weixin.qq.com/cgi-bin/user/info/batchget?","批量获取用户基本信息"),
+    URL_USER_UPDATEREMARK("https://api.weixin.qq.com/cgi-bin/user/info/updateremark?","设置用户备注名请求"),
     URL_QRCODE_CREATE("https://api.weixin.qq.com/cgi-bin/qrcode/create?","获取带参数的二维码"),
     URL_QRCODE_IMAGE("https://mp.weixin.qq.com/cgi-bin/showqrcode?","用ticket换取二维码图片"),
 

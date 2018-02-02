@@ -11,6 +11,7 @@ import com.xonro.serviceno.web.RequestExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -105,15 +106,48 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    @CachePut(value="userCache")
+    @CachePut(value="userCache#86400#82800")
     public List<UserInfo> updateUserPut(String openId) throws WechatException {
         return getUserInfoList(openId);
+    }
+    @Override
+    @CachePut(value="userCache#86400#82800")
+    public List<UserInfo> updateUserPutByRemark(List<UserInfo> userInfos) throws WechatException {
+        List<UserInfo> userInfos1;
+        userInfos1 = userInfos;
+        return userInfos1;
     }
 
     @Override
     @Cacheable(value="userCache#86400#82800")
     public List<UserInfo> getUser(String openId) throws WechatException {
         return getUserInfoList(openId);
+    }
+    @Override
+    @CacheEvict(value="userCache#86400#82800",allEntries=true)// 清空accountCache 缓存
+    public void reload() {
+        System.err.println("刷新缓存");
+    }
+
+    @Override
+    public List<UserInfo> updateRemark(String openId, String remark) throws WechatException {
+        //提交的参数
+        TreeMap<String,Object> dataParams = new TreeMap<>();
+        dataParams.put("openid", openId);
+        dataParams.put("remark", remark);
+        try {
+            new RequestExecutor(urlBuilder.buildUpdateRemarkUrl()).execute(JSON.toJSONString(dataParams)).getResponseAsObject(String.class);
+            UserInfo s = getUserInfo(openId);
+            List<UserInfo> userInfos = getUser("");
+            for (UserInfo userInfo: userInfos){
+                if (userInfo.getOpenid().equals(s.getOpenid())){
+                    userInfo.setNickname(s.getNickname());
+                }
+            }
+            return userInfos;
+        } catch (WechatException | IOException e) {
+            throw new WechatException("1", e.getMessage());
+        }
     }
 
 }
