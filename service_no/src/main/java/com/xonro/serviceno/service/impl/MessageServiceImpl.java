@@ -3,11 +3,15 @@ package com.xonro.serviceno.service.impl;
 import com.xonro.serviceno.bean.WechatArticlesMessage;
 import com.xonro.serviceno.bean.WechatMediaMessage;
 import com.xonro.serviceno.bean.WechatMessage;
+import com.xonro.serviceno.bean.user.UserInfo;
+import com.xonro.serviceno.dao.UserRepository;
 import com.xonro.serviceno.enums.WechatEnums;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.MessageService;
+import com.xonro.serviceno.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +26,12 @@ import java.util.Map;
 @Service
 public class MessageServiceImpl implements MessageService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
     /**
      * 解析微信平台推送的消息
      *
@@ -38,8 +48,24 @@ public class MessageServiceImpl implements MessageService{
             String openId = params.get("FromUserName");
             //事件推送
             if (msgType.equals(WechatEnums.MSG_TYPE_EVENT.getValue())){
-                System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
-                return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
+                String event = params.get("Event");
+                //订阅消息
+                if (event.equals(WechatEnums.MSG_TYPE_SUBSCRIBE.getValue())){
+                    userRepository.save(userService.getUserInfo(openId));
+                }
+                //取消订阅
+                else if (event.equals(WechatEnums.MSG_TYPE_UNSUBSCRIBE.getValue())){
+                    UserInfo userInfo = userRepository.findByOpenid(openId);
+                    if (userInfo != null){
+                        userInfo.setSubscribe(userService.getUserInfo(openId).getSubscribe());
+                        userRepository.save(userInfo);
+                    }
+
+                } else {
+                    System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
+                    return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
+                }
+
             }
             //文本消息
             else if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
@@ -49,7 +75,8 @@ public class MessageServiceImpl implements MessageService{
             //图片消息
             else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE)){
 
-            } else {
+            }
+            else {
 
             }
         } catch (Exception e) {

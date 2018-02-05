@@ -85,29 +85,8 @@ public class WechatController{
     }
 
     @RequestMapping(value = "/getUserInfoList")
-    public BaseResponse getUserInfoList(String openId){
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setOk(true);
-        try {
-            baseResponse.setData(JSON.toJSONString(userService.getUser(openId)));
-        } catch (WechatException e) {
-            baseResponse.setOk(false);
-            baseResponse.setMsg(e.getMessage());
-        }
-        return baseResponse;
-    }
-
-    @RequestMapping(value = "/refreshUserInfoList")
-    public BaseResponse refreshUserInfoList(String openId){
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setOk(true);
-        try {
-            baseResponse.setData(JSON.toJSONString(userService.updateUserPut(openId)));
-        } catch (WechatException e) {
-            baseResponse.setOk(false);
-            baseResponse.setMsg(e.getMessage());
-        }
-        return baseResponse;
+    public String getUserInfoList(Integer page, Integer limit){
+        return JSON.toJSONString(userService.getUserInfoList("", page, limit));
     }
 
     /**
@@ -121,9 +100,7 @@ public class WechatController{
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setOk(true);
         try {
-            //更新缓存
-            userService.reload();
-            baseResponse.setData(JSON.toJSONString(userService.updateUserPutByRemark(userService.updateRemark(openId, remark))));
+            userService.updateRemark(openId, remark);
             return baseResponse;
         } catch (WechatException e) {
             baseResponse.setOk(false);

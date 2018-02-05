@@ -2,6 +2,7 @@ package com.xonro.serviceno.bean.user;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -66,7 +67,7 @@ public class UserInfo implements Serializable{
     /**
      * 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
      */
-    private Long subscribe_time;
+    private Long subscribeTime;
 
     /**
      * 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段
@@ -160,13 +161,13 @@ public class UserInfo implements Serializable{
     public void setHeadimgurl(String headimgurl) {
         this.headimgurl = headimgurl;
     }
-
-    public Long getSubscribe_time() {
-        return subscribe_time;
+    @Query(name = "subscribe_time")
+    public Long getSubscribeTime() {
+        return subscribeTime;
     }
 
-    public void setSubscribe_time(Long subscribe_time) {
-        this.subscribe_time = subscribe_time;
+    public void setSubscribeTime(Long subscribeTime) {
+        this.subscribeTime = subscribeTime;
     }
 
     public String getUnionid() {

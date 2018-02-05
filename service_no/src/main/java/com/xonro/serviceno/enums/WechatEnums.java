@@ -61,6 +61,8 @@ public enum WechatEnums {
     MSG_TYPE_EVENT("event","事件推送"),
     MSG_TYPE_TYPING("Typing","对用户下发”正在输入“状态 "),
     MSG_TYPE_CANCELTYPING("CancelTyping","取消对用户的”正在输入“状态"),
+    MSG_TYPE_SUBSCRIBE("subscribe", "订阅"),
+    MSG_TYPE_UNSUBSCRIBE("unsubscribe", "取消订阅"),
 
     /**事件类型常量枚举*/
     EVENT_SUBSCRIBE("subscribe","订阅"),

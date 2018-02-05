@@ -59,9 +59,9 @@ public class RequestExecutorTest {
         System.out.println(result);
     }
 
-    @Test
-    public void testBatchUserIfo() throws WechatException {
-        userService.getUserInfoList("");
-    }
+//    @Test
+//    public void testBatchUserIfo() throws WechatException {
+//        userService.getUserInfoList("");
+//    }
 
 }
