@@ -8,19 +8,6 @@
     <link rel="stylesheet" href="../../lib/layui/css/layui.css" media="all">
     <script type="text/javascript" src="../../plugins/jquery/jquery.min.js"></script>
     <script src="../../lib/layui/layui.js"></script>
-    <style>
-        .layui-table-view .layui-table[lay-size="lg"] .layui-table-cell.laytable-cell-1-headimgurl{
-            height: 100%;
-            max-width: 100%;
-        }
-        .laytable-cell-1-headimgurl
-        img{
-            width: auto;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-        }
-    </style>
 </head>
 <body class="childrenBody">
 <div class="layui-col-md12 layui-col-space1">
@@ -54,13 +41,12 @@
         var layer = layui.layer;
         var tables = table.render({
             elem: '#wxUser'
-            ,data: getUserInfoList(layer)
+            ,url: "../../wechat/getUserInfoList/"
             ,page: true
             ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             ,height: 'full-160'
             ,cols: [[
-                {field:'headimgurl', width:100,title: '用户头像',style:"height:100px",unresize:true,fixed:"left", templet:"#headimgurl"}
-                ,{field:'nickname',fixed:"left", title: '昵称'}
+                {field:'nickname',fixed:"left", title: '昵称'}
                 ,{field:'openid', title: '标识'}
                 ,{field:'subscribe', title: '是否订阅', templet:"#issubscribe"}
                 ,{field:'sex', title: '性别'}
@@ -73,7 +59,7 @@
                 ,{field:'remark', title: '备注'}
                 ,{field:'groupid', title: '分组ID'}
                 ,{field:'tagid_list', title: '标签ID列表'}
-                ,{fixed: 'right', title: '操作',width:120, align:'center',style:"height:100px", toolbar: '#bar'}
+                ,{fixed: 'right', title: '操作',width:120, align:'center', toolbar: '#bar'}
             ]]
             ,loading:true //是否显示加载条 默认true 该参数只适用于 url 参数开启的方式
             ,text: { //自定义文本，如空数据时的异常提示等
@@ -86,7 +72,7 @@
         $("#refresh").on("click",function () {
             tables.reload({
                 elem: '#wxUser'
-                ,data: refreshUserInfoList(layer)
+                ,url: "../../wechat/getUserInfoList/"
             });
         });
         var indexOpen;
@@ -133,80 +119,22 @@
                         layer.close(indexOpen);
                         tables.reload({
                             elem: '#wxUser'
-                            ,data: JSON.parse(data.data)
-                        })
+                            ,url: "../../wechat/getUserInfoList/"
+                        });
                     } else {
-                        layer.msg("提交失败", {icon: 1,time:3000});
+                        layer.msg("提交失败，错误信息"+data.msg, {icon: 1,time:3000});
                     }
                 },
                 error : function (data) {
-                    layer.msg("提交失败", {icon: 1,time:3000});
+                    layer.msg("提交失败，错误信息"+data.msg, {icon: 1,time:3000});
                 }
             });
         });
     });
 
-
-    function refreshUserInfoList(layer) {
-        var info = {};
-        var index = layer.msg('数据拉取中',{icon: 16,time:false,shade:0.8});
-        $.ajax({
-            url: "../../wechat/refreshUserInfoList",
-            type: "post",
-            dataType: "json",
-            async: false,
-            data: {
-                openId: ""
-            },
-            success: function (data) {
-                if (data.ok){
-                    layer.close(index);
-                    layer.msg("获取成功", {icon: 1,time:3000});
-                    info = JSON.parse(data.data);
-                } else {
-                    layer.msg("数据获取失败，错误信息"+data.msg, {icon: 2,time:3000});
-                }
-            },
-            error : function (data) {
-                layer.msg("数据获取失败，错误信息"+data.msg, {icon: 2,time:3000});
-            }
-        });
-        return info;
-    }
-    function getUserInfoList(layer) {
-        var info = {};
-        var index2 = layer.msg('数据拉取中',{icon: 16,time:false,shade:0.8});
-        $.ajax({
-            url: "../../wechat/getUserInfoList",
-            type: "post",
-            dataType: "json",
-            async: false,
-            data: {
-                openId: ""
-            },
-            success: function (data) {
-                if (data.ok){
-                    layer.close(index2);
-                    layer.msg("获取成功", {icon: 1,time:3000});
-                    info = JSON.parse(data.data);
-                } else {
-                    layer.msg("数据获取失败，错误信息"+data.msg, {icon: 2,time:3000});
-                }
-            },
-            error : function (data) {
-                layer.msg("数据获取失败，错误信息"+data.msg, {icon: 2,time:3000});
-            }
-        });
-        return info;
-    }
 </script>
 <script type="text/html" id="issubscribe">
     <input disabled {{ d.subscribe == '1' ? 'checked' : '' }} name="subscribe" lay-filter="switchTest" lay-skin="switch" lay-text="YES|NO" type="checkbox">
-</script>
-<script type="text/html" id="headimgurl">
-    <div>
-        <img src="{{d.headimgurl}}" />
-    </div>
 </script>
 <script type="text/html" id="bar">
     <a class="layui-btn layui-btn-xs" id="remark_{{d.openid}}" lay-event="editRemark">修改备注</a>
