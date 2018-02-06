@@ -1,6 +1,6 @@
 package com.xonro.weixinpay.service.impl;
 
-import com.xonro.serviceno.service.ServiceNoConfService;
+import com.xonro.serviceno.service.WechatService;
 import com.xonro.weixinpay.service.PayConfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,11 +15,11 @@ public class PayConfRunner implements CommandLineRunner{
     @Autowired
     PayConfService payConfService;
     @Autowired
-    ServiceNoConfService serviceNoConfService;
+    WechatService wechatService;
     @Override
     public void run(String... strings) throws Exception {
         System.out.println(">>>>>>>>>>>>>>>服务启动执行，执行加载数据等操作<<<<<<<<<<<<<");
         payConfService.getConfFromCache();
-        serviceNoConfService.getConfFromCache();
+        wechatService.getConfFromCache();
     }
 }

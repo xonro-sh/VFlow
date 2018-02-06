@@ -1,7 +1,7 @@
 package com.xonro.weixinpay.service.impl;
 
 import com.github.wxpay.sdk.WXPayConfig;
-import com.xonro.serviceno.service.ServiceNoConfService;
+import com.xonro.serviceno.service.WechatService;
 import com.xonro.weixinpay.service.PayConfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class WxPayConfImpl implements WXPayConfig{
     @Autowired
     private PayConfService payConfService;
     @Autowired
-    private ServiceNoConfService serviceNoConfService;
+    private WechatService wechatService;
 
     private InputStream inputStream = WxPayConfImpl.class.getClassLoader().getResourceAsStream("apiclient_cert.p12");
 
@@ -27,7 +27,7 @@ public class WxPayConfImpl implements WXPayConfig{
 
     @Override
     public String getAppID() {
-        return serviceNoConfService.getConfFromCache().getAppId();
+        return wechatService.getConfFromCache().getAppId();
     }
 
     @Override
