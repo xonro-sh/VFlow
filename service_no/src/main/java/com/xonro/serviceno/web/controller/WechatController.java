@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.WechatJsSignature;
 import com.xonro.serviceno.bean.config.ServiceNoConf;
+import com.xonro.serviceno.bean.message.Message;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,26 @@ public class WechatController{
     @RequestMapping(value = "/getServiceNoConf")
     public BaseResponse getServiceNoConf(){
         return wechatService.getServiceNoConf();
+    }
+
+    /**
+     * 获取消息配置
+     * @param type 消息类型（大类）
+     * @return 结果
+     */
+    @RequestMapping(value = "/getMessageConf")
+    public BaseResponse getMessageConf(String type){
+        return wechatService.getMessageConf(type);
+    }
+
+    /**
+     * 更新消息设置
+     * @param message 信息对象
+     * @return 结果
+     */
+    @RequestMapping(value = "/updateMessageConf")
+    public BaseResponse updateMessageConf(String data){
+        return wechatService.updateMessageConf(JSON.parseObject(data, Message.class));
     }
 
     @RequestMapping(value = "/getUserInfoList")

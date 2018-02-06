@@ -6,6 +6,8 @@ import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.CreateQrCode;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.config.ServiceNoConf;
+import com.xonro.serviceno.bean.message.Message;
+import com.xonro.serviceno.dao.MessageRepository;
 import com.xonro.serviceno.dao.ServiceNoConfRepository;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
@@ -14,6 +16,7 @@ import com.xonro.serviceno.web.RequestExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,6 +34,9 @@ public class WechatServiceImpl implements WechatService {
 
     @Autowired
     private ServiceNoConfRepository serviceNoConfRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @Override
     public QrCode createQrCode(Long expireSeconds, Object sceneValue) {
@@ -106,4 +112,62 @@ public class WechatServiceImpl implements WechatService {
         }
         return baseResponse;
     }
+
+    /**
+     * 获取缓存的公众号配置
+     *
+     * @return
+     */
+    @Override
+    @Cacheable(value = "getConfFromCache")
+    public ServiceNoConf getConfFromCache(){
+        return getConf();
+    }
+
+    /**
+     * 获取消息配置
+     * @param type 消息类型（大类）
+     * @return 结果
+     */
+    @Override
+    public BaseResponse getMessageConf(String type) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            List<Message> messages = messageRepository.findByType(type);
+            baseResponse.setData(null);
+            if (messages.size()!=0){
+                baseResponse.setData(messages.get(0));
+            }
+        } catch (Exception e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
+    }
+
+    /**
+     * 更新消息设置
+     * @param message 信息对象
+     * @return 结果
+     */
+    @Override
+    public BaseResponse updateMessageConf(Message message) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setOk(true);
+        try {
+            messageRepository.save(message);
+        } catch (Exception e) {
+            baseResponse.setOk(false);
+            baseResponse.setMsg(e.getMessage());
+        }
+        return baseResponse;
+    }
+
+    private ServiceNoConf getConf(){
+        List<ServiceNoConf> serviceNoConf = serviceNoConfRepository.findAll();
+        return serviceNoConf.size()==0?null:serviceNoConf.get(0);
+    }
+
+
 }

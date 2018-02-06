@@ -1,10 +1,9 @@
 package com.xonro.serviceno.helper;
 
 import com.xonro.serviceno.enums.WechatEnums;
-import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.serviceno.service.TokenService;
+import com.xonro.serviceno.service.WechatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +18,7 @@ public class UrlBuilder {
     TokenService tokenService;
 
     @Autowired
-    ServiceNoConfService serviceNoConfService;
+    WechatService wechatService;
 
 
 
@@ -28,7 +27,7 @@ public class UrlBuilder {
      * @return 构建完成的请求url
      */
     public String buildGetTokenUrl(){
-        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ serviceNoConfService.getConfFromCache().getAppId() +"&secret="+serviceNoConfService.getConfFromCache().getAppSecret();
+        return WechatEnums.URL_TOKEN.getValue()+"&appid="+ wechatService.getConfFromCache().getAppId() +"&secret="+wechatService.getConfFromCache().getAppSecret();
     }
 
     /**

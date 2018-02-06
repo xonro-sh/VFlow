@@ -1,4 +1,4 @@
-package com.xonro.serviceno.bean;
+package com.xonro.serviceno.bean.message;
 
 import org.springframework.stereotype.Component;
 

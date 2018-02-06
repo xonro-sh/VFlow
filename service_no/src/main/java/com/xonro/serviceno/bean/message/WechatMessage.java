@@ -1,4 +1,4 @@
-package com.xonro.serviceno.bean;
+package com.xonro.serviceno.bean.message;
 
 import com.xonro.serviceno.enums.WechatEnums;
 

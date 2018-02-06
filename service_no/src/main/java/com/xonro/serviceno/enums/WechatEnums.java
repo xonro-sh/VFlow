@@ -63,6 +63,8 @@ public enum WechatEnums {
     MSG_TYPE_CANCELTYPING("CancelTyping","取消对用户的”正在输入“状态"),
     MSG_TYPE_SUBSCRIBE("subscribe", "订阅"),
     MSG_TYPE_UNSUBSCRIBE("unsubscribe", "取消订阅"),
+    MSG_TYPE_FIRST("1", "收到消息回复"),
+    MSG_TYPE_SECOND("2", "被关注回复"),
 
     /**事件类型常量枚举*/
     EVENT_SUBSCRIBE("subscribe","订阅"),

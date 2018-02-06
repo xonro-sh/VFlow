@@ -3,14 +3,13 @@ package com.xonro.serviceno.service.impl;
 import com.xonro.serviceno.bean.WechatAccessToken;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.helper.UrlBuilder;
-import com.xonro.serviceno.service.ServiceNoConfService;
 import com.xonro.serviceno.service.TokenService;
+import com.xonro.serviceno.service.WechatService;
 import com.xonro.serviceno.web.RequestExecutor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ import java.util.Arrays;
 public class TokenServiceImpl implements TokenService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    ServiceNoConfService serviceNoConfService;
+    WechatService wechatService;
     @Autowired
     private UrlBuilder urlBuilder;
 
@@ -40,7 +39,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     public String checkSignature(String signature, Long timestamp, String nonce, String echostr) {
-        String[] array = new String[]{timestamp+"",nonce, serviceNoConfService.getConfFromCache().getToken()};
+        String[] array = new String[]{timestamp+"",nonce, wechatService.getConfFromCache().getToken()};
         Arrays.sort(array);
 
         StringBuilder builder = new StringBuilder();
