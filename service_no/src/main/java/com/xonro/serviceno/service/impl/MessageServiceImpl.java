@@ -4,6 +4,7 @@ import com.xonro.serviceno.bean.WechatArticlesMessage;
 import com.xonro.serviceno.bean.WechatMediaMessage;
 import com.xonro.serviceno.bean.WechatMessage;
 import com.xonro.serviceno.enums.WechatEnums;
+import com.xonro.serviceno.helper.MessegeParser;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.MessageService;
 import org.slf4j.Logger;
@@ -22,9 +23,9 @@ import java.util.Map;
 @Service
 public class MessageServiceImpl implements MessageService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 解析微信平台推送的消息
-     *
      * @param xmlMessage 微信平台post的消息xml
      * @return 是否成功 返回""或者SUCCESS都为成功
      */
