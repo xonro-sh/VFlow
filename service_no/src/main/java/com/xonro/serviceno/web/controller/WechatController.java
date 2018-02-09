@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.WechatJsSignature;
 import com.xonro.serviceno.bean.config.ServiceNoConf;
+import com.xonro.serviceno.bean.message.Message;
 import com.xonro.serviceno.exception.WechatException;
 import com.xonro.serviceno.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,30 +85,29 @@ public class WechatController{
         return wechatService.getServiceNoConf();
     }
 
-    @RequestMapping(value = "/getUserInfoList")
-    public BaseResponse getUserInfoList(String openId){
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setOk(true);
-        try {
-            baseResponse.setData(JSON.toJSONString(userService.getUser(openId)));
-        } catch (WechatException e) {
-            baseResponse.setOk(false);
-            baseResponse.setMsg(e.getMessage());
-        }
-        return baseResponse;
+    /**
+     * 获取消息配置
+     * @param type 消息类型（大类）
+     * @return 结果
+     */
+    @RequestMapping(value = "/getMessageConf")
+    public BaseResponse getMessageConf(String type){
+        return wechatService.getMessageConf(type);
     }
 
-    @RequestMapping(value = "/refreshUserInfoList")
-    public BaseResponse refreshUserInfoList(String openId){
-        BaseResponse baseResponse = new BaseResponse();
-        baseResponse.setOk(true);
-        try {
-            baseResponse.setData(JSON.toJSONString(userService.updateUserPut(openId)));
-        } catch (WechatException e) {
-            baseResponse.setOk(false);
-            baseResponse.setMsg(e.getMessage());
-        }
-        return baseResponse;
+    /**
+     * 更新消息设置
+     * @param message 信息对象
+     * @return 结果
+     */
+    @RequestMapping(value = "/updateMessageConf")
+    public BaseResponse updateMessageConf(String data){
+        return wechatService.updateMessageConf(JSON.parseObject(data, Message.class));
+    }
+
+    @RequestMapping(value = "/getUserInfoList")
+    public String getUserInfoList(Integer page, Integer limit){
+        return JSON.toJSONString(userService.getUserInfoList("", page, limit));
     }
 
     /**
@@ -121,9 +121,7 @@ public class WechatController{
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setOk(true);
         try {
-            //更新缓存
-            userService.reload();
-            baseResponse.setData(JSON.toJSONString(userService.updateUserPutByRemark(userService.updateRemark(openId, remark))));
+            userService.updateRemark(openId, remark);
             return baseResponse;
         } catch (WechatException e) {
             baseResponse.setOk(false);

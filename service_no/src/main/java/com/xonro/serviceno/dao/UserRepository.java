@@ -1,6 +1,8 @@
 package com.xonro.serviceno.dao;
 
 import com.xonro.serviceno.bean.user.UserInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +13,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<UserInfo,Long> {
+    /**
+     * 分页查找所有
+     * @param pageable
+     * @return
+     */
+    @Override
+    Page<UserInfo> findAll(Pageable pageable);
+
+
+    UserInfo findByOpenid(String openid);
+
 }

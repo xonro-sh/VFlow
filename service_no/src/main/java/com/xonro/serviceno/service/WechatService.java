@@ -3,6 +3,7 @@ package com.xonro.serviceno.service;
 import com.xonro.serviceno.bean.BaseResponse;
 import com.xonro.serviceno.bean.QrCode;
 import com.xonro.serviceno.bean.config.ServiceNoConf;
+import com.xonro.serviceno.bean.message.Message;
 
 /**
  * 公众平台提供的相关服务
@@ -38,4 +39,24 @@ public interface WechatService {
      * @return 结果
      */
     BaseResponse getServiceNoConf();
+
+    /**
+     * 获取缓存的公众号配置
+     * @return token
+     */
+    ServiceNoConf getConfFromCache();
+
+    /**
+     * 获取消息配置
+     * @param type 消息类型（大类）
+     * @return 结果
+     */
+    BaseResponse getMessageConf(String type);
+
+    /**
+     * 更新消息设置
+     * @param message 信息对象
+     * @return 结果
+     */
+    BaseResponse updateMessageConf(Message message);
 }

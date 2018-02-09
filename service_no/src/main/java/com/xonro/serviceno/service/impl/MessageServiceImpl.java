@@ -1,18 +1,22 @@
 package com.xonro.serviceno.service.impl;
 
-import com.xonro.serviceno.bean.WechatArticlesMessage;
-import com.xonro.serviceno.bean.WechatMediaMessage;
-import com.xonro.serviceno.bean.WechatMessage;
+import com.xonro.serviceno.bean.message.Message;
+import com.xonro.serviceno.bean.message.WechatArticlesMessage;
+import com.xonro.serviceno.bean.message.WechatMediaMessage;
+import com.xonro.serviceno.bean.message.WechatMessage;
+import com.xonro.serviceno.bean.user.UserInfo;
+import com.xonro.serviceno.dao.MessageRepository;
+import com.xonro.serviceno.dao.UserRepository;
 import com.xonro.serviceno.enums.WechatEnums;
-import com.xonro.serviceno.helper.MessegeParser;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.MessageService;
+import com.xonro.serviceno.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +28,17 @@ import java.util.Map;
 public class MessageServiceImpl implements MessageService{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
     /**
      * 解析微信平台推送的消息
+     *
      * @param xmlMessage 微信平台post的消息xml
      * @return 是否成功 返回""或者SUCCESS都为成功
      */
@@ -39,19 +52,43 @@ public class MessageServiceImpl implements MessageService{
             String openId = params.get("FromUserName");
             //事件推送
             if (msgType.equals(WechatEnums.MSG_TYPE_EVENT.getValue())){
-                System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
-                return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
-            }
-            //文本消息
-            else if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())){
-                System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_NEWS.getValue(), openId, wechatId, "我爱中国"));
-                return replyMessage(WechatEnums.MSG_TYPE_NEWS.getValue(), openId, wechatId, "我爱中国");
-            }
-            //图片消息
-            else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE)){
+                String event = params.get("Event");
+                //订阅消息
+                if (event.equals(WechatEnums.MSG_TYPE_SUBSCRIBE.getValue())){
+                    userRepository.save(userService.getUserInfo(openId));
+                    //获取系统配置消息
+                    List<Message> messages = messageRepository.findByType(WechatEnums.MSG_TYPE_SECOND.getValue());
+                    if (messages.size()!=0){
+                        //如果有效
+                        if ( messages.get(0).isActive()){
+                            return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId,  messages.get(0).getContent());
+                        }
+                    }
+                }
+                //取消订阅
+                else if (event.equals(WechatEnums.MSG_TYPE_UNSUBSCRIBE.getValue())){
+                    UserInfo userInfo = userRepository.findByOpenid(openId);
+                    if (userInfo != null){
+                        userInfo.setSubscribe(userService.getUserInfo(openId).getSubscribe());
+                        userRepository.save(userInfo);
+                    }
 
-            } else {
+                } else {
+                    System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
+                    return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
+                }
 
+            }
+            //收到消息回复
+            else {
+                //获取系统配置消息
+                List<Message> messages = messageRepository.findByType(WechatEnums.MSG_TYPE_FIRST.getValue());
+                if (messages.size()!=0){
+                    //如果有效
+                    if ( messages.get(0).isActive()){
+                        return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId,  messages.get(0).getContent());
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);

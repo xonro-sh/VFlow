@@ -1,6 +1,7 @@
 package com.xonro.serviceno.service;
 
 
+import com.xonro.serviceno.bean.TableResponse;
 import com.xonro.serviceno.bean.user.UserInfo;
 import com.xonro.serviceno.exception.WechatException;
 
@@ -35,28 +36,21 @@ public interface UserService {
     /**
      * 批量获取用户基本信息
      * @param openId 普通用户的标识，对当前公众号唯一
+     * @param page 第几页
+     * @param rows 每页多少条数据
      * @return
      */
-    public List<UserInfo> getUserInfoList(String openId) throws WechatException;
+    public TableResponse getUserInfoList(String openId, Integer page, Integer rows);
+
 
     /**
-     * 更新批量获取的用户基本信息
+     * 更新备注
      * @param openId 普通用户的标识，对当前公众号唯一
+     * @param remark 备注信息
      * @return
      * @throws WechatException
      */
-    public List<UserInfo> updateUserPut(String openId) throws WechatException;
+    public void updateRemark(String openId, String remark) throws WechatException;
 
-    /**
-     * 获取批量用户基本信息（每天更新一次缓存）
-     * @param openId 普通用户的标识，对当前公众号唯一
-     * @return
-     * @throws WechatException
-     */
-    public List<UserInfo> getUser(String openId) throws WechatException;
 
-    public List<UserInfo> updateRemark(String openId, String remark) throws WechatException;
-
-    public List<UserInfo> updateUserPutByRemark(List<UserInfo> userInfos) throws WechatException;
-    public void reload();
 }
