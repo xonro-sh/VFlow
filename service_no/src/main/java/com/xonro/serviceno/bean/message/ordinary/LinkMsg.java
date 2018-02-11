@@ -1,28 +1,30 @@
-package com.xonro.serviceno.bean.userMessage;
+package com.xonro.serviceno.bean.message.ordinary;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * 链接消息
  * @author louie
  * @date 2018-2-8
  */
-public class LinkMsg {
-    public LinkMsg(){}
-
-    public LinkMsg(String title){}
+public class LinkMsg extends OrdinaryMessage {
 
     /**
      * 消息标题
      */
+    @JSONField(name = "Title")
     private String title;
 
     /**
      * 消息描述
      */
+    @JSONField(name = "Description")
     private String description;
 
     /**
      * 消息链接
      */
+    @JSONField(name = "Url")
     private String url;
 
     public String getTitle() {

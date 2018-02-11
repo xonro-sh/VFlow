@@ -1,13 +1,18 @@
 package com.xonro.serviceno.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.xonro.serviceno.bean.message.Message;
-import com.xonro.serviceno.bean.message.WechatArticlesMessage;
-import com.xonro.serviceno.bean.message.WechatMediaMessage;
-import com.xonro.serviceno.bean.message.WechatMessage;
+import com.xonro.serviceno.bean.message.event.EventMessage;
+import com.xonro.serviceno.bean.message.event.LocationEvent;
+import com.xonro.serviceno.bean.message.ordinary.*;
+import com.xonro.serviceno.bean.message.relpy.WechatArticlesMessage;
+import com.xonro.serviceno.bean.message.relpy.WechatMediaMessage;
+import com.xonro.serviceno.bean.message.relpy.ReplyWechatMessage;
 import com.xonro.serviceno.bean.user.UserInfo;
 import com.xonro.serviceno.dao.MessageRepository;
 import com.xonro.serviceno.dao.UserRepository;
 import com.xonro.serviceno.enums.WechatEnums;
+import com.xonro.serviceno.helper.MessageParser;
 import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.MessageService;
 import com.xonro.serviceno.service.UserService;
@@ -38,57 +43,51 @@ public class MessageServiceImpl implements MessageService{
     private MessageRepository messageRepository;
     /**
      * 解析微信平台推送的消息
-     *
      * @param xmlMessage 微信平台post的消息xml
      * @return 是否成功 返回""或者SUCCESS都为成功
      */
     @Override
     public String parseMessage(String xmlMessage) {
-        Map<String,String> params;
         try {
-            params = ServiceNoHelper.xmlToMap(xmlMessage);
-            String msgType = params.get("MsgType");
-            String wechatId = "gh_5438f14fcf6f";
-            String openId = params.get("FromUserName");
-            //事件推送
-            if (msgType.equals(WechatEnums.MSG_TYPE_EVENT.getValue())){
-                String event = params.get("Event");
-                //订阅消息
-                if (event.equals(WechatEnums.MSG_TYPE_SUBSCRIBE.getValue())){
-                    userRepository.save(userService.getUserInfo(openId));
-                    //获取系统配置消息
-                    List<Message> messages = messageRepository.findByType(WechatEnums.MSG_TYPE_SECOND.getValue());
-                    if (messages.size()!=0){
-                        //如果有效
-                        if ( messages.get(0).isActive()){
-                            return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId,  messages.get(0).getContent());
-                        }
-                    }
-                }
-                //取消订阅
-                else if (event.equals(WechatEnums.MSG_TYPE_UNSUBSCRIBE.getValue())){
-                    UserInfo userInfo = userRepository.findByOpenid(openId);
-                    if (userInfo != null){
-                        userInfo.setSubscribe(userService.getUserInfo(openId).getSubscribe());
-                        userRepository.save(userInfo);
-                    }
+            OrdinaryMessage ordinaryMessage = new MessageParser(xmlMessage).parse();
+            String msgType = ordinaryMessage.getMsgType();
 
-                } else {
-                    System.err.println(""+replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国"));
-                    return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId, "我爱中国");
+            switch (msgType){
+                //文本消息
+                case "text":{
+                    return accessTextMessage(ordinaryMessage);
                 }
 
-            }
-            //收到消息回复
-            else {
-                //获取系统配置消息
-                List<Message> messages = messageRepository.findByType(WechatEnums.MSG_TYPE_FIRST.getValue());
-                if (messages.size()!=0){
-                    //如果有效
-                    if ( messages.get(0).isActive()){
-                        return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), openId, wechatId,  messages.get(0).getContent());
-                    }
+                //图片消息
+                case "image":{
+                    return accessImageMessage((ImageMsg) ordinaryMessage);
                 }
+
+                //语音消息
+                case "voice":{
+                    return accessVoiceMessage((VoiceMsg) ordinaryMessage);
+                }
+
+                //视频消息
+                case "video":{
+                    return accessVideoMessage((VideoMsg) ordinaryMessage);
+                }
+
+                //地理位置消息
+                case "location":{
+                    return accessLocationMessage((LocationMsg) ordinaryMessage);
+                }
+
+                //链接消息
+                case "link":{
+                    return accessLinkMessage((LinkMsg) ordinaryMessage);
+                }
+
+                //事件推送
+                case "event":{
+                    return accessEventMessage((EventMessage) ordinaryMessage);
+                }
+                default:return "";
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
@@ -96,17 +95,129 @@ public class MessageServiceImpl implements MessageService{
         return "";
     }
 
+    /**
+     * 处理文本消息，后续将扩展根据一定规则响应对应信息
+     * 消息匹配规则将在后台系统实现
+     * @param ordinaryMessage
+     * @return
+     */
+    private String accessTextMessage(OrdinaryMessage ordinaryMessage){
+        // TODO: 2018-2-11 接收文本消息并做处理
+        return "";
+    }
+
+    /**
+     * 处理图片消息
+     * @param imageMsg
+     * @return
+     */
+    private String accessImageMessage(ImageMsg imageMsg){
+        // TODO: 2018-2-11 接收图片消息并做处理
+        return "";
+    }
+
+    /**
+     * 处理语音消息
+     * @param voiceMsg
+     * @return
+     */
+    private String accessVoiceMessage(VoiceMsg voiceMsg){
+        // TODO: 2018-2-11 接收语音消息并处理
+
+        return "";
+    }
+
+    /**
+     * 处理视频消息
+     * @param videoMsg
+     * @return
+     */
+    private String accessVideoMessage(VideoMsg videoMsg){
+        // TODO: 2018-2-11 接收视频消息并做响应处理
+
+        return "";
+    }
+
+    /**
+     * 处理位置消息
+     * @param locationMsg
+     * @return
+     */
+    private String accessLocationMessage(LocationMsg locationMsg){
+        // TODO: 2018-2-11 接收位置消息并做处理
+
+        return "";
+    }
+
+    /**
+     * 处理链接消息
+     * @param linkMsg
+     * @return
+     */
+    private String accessLinkMessage(LinkMsg linkMsg){
+        // TODO: 2018-2-11 接收链接消息并做处理
+        
+        return "";
+    }
+
+    /**
+     * 处理事件消息
+     * @param eventMessage
+     * @return
+     */
+    private String accessEventMessage(EventMessage eventMessage){
+        String eventType = eventMessage.getEvent();
+        String userOpenId = eventMessage.getFromUserName();
+
+        //用户订阅事件：1、保存用户信息；2、根据配置响应关注后信息
+        if (eventType.equals(WechatEnums.EVENT_SUBSCRIBE.getValue())){
+            userRepository.save(userService.getUserInfo(userOpenId));
+
+            //获取系统配置消息
+            List<Message> messages = messageRepository.findByType(WechatEnums.MSG_TYPE_SECOND.getValue());
+            if (messages.size()!=0){
+                //如果有效
+                if ( messages.get(0).isActive()){
+                    String wechatId = "gh_5438f14fcf6f";
+                    return replyMessage(WechatEnums.MSG_TYPE_TEXT.getValue(), userOpenId, wechatId,  messages.get(0).getContent());
+                }
+            }
+        }
+
+        //取消订阅，更新用户状态
+        if (eventType.equals(WechatEnums.EVENT_UNSUBSCRIBE.getValue())){
+            UserInfo userInfo = userRepository.findByOpenid(userOpenId);
+            if (userInfo != null){
+                userInfo.setSubscribe(userService.getUserInfo(userOpenId).getSubscribe());
+                userRepository.save(userInfo);
+            }
+        }
+
+        //上报地理位置事件
+        if (eventType.equals(WechatEnums.EVENT_LOCATION.getValue())){
+            LocationEvent locationEvent = (LocationEvent) eventMessage;
+
+            // TODO: 2018-2-11 处理地理位置信息
+        }
+
+        // TODO: 2018-2-11 其他类型事件信息均可从eventMessage中获取
+
+        return "";
+    }
+
+
+
     public String replyMessage(String msgType, String openId, String wechatId, String content){
         if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())) {
-            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new WechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, content)));
+            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, content)));
         } else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue()) || msgType.equals(WechatEnums.MSG_TYPE_VOICE.getValue())) {
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new WechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
+            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
             String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("2ISU_cKchVgMoCS_kC5a3Z46hcrYrN2cU3VImUIK9LKUjB0PeWa5ZjfjO3D4hAWf"),"image");
             return xml2==null?null:xml1.concat(xml2);
         } else if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue())){
-            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new WechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "")));
+            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "")));
         } else if (msgType.equals(WechatEnums.MSG_TYPE_MUSIC.getValue())){
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new WechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
+            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
             String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("测试音乐消息", "TaylorSwift", "http://url.cn/5gwf6be", "http://url.cn/5gwf6be", "kDYbKqfRkWtL1upUgPWg35poCbXpGdYkhSIyCB5jTpjMsytS8PQaaih8ML8nXgBt"),msgType);
             return xml2==null?null:xml1.concat(xml2);
         } else {
@@ -116,7 +227,7 @@ public class MessageServiceImpl implements MessageService{
             wechatArticlesMessages.add(wechatArticlesMessage);
             wechatArticlesMessages.add(wechatArticlesMessage1);
             //多条图文消息
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new WechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "2"))).replace("</xml>", "");
+            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "2"))).replace("</xml>", "");
             String xml2 = ServiceNoHelper.getArticlesXml(wechatArticlesMessages);
 
             return xml1.concat(xml2);

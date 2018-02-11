@@ -1,11 +1,11 @@
-package com.xonro.serviceno.bean.userMessage;
+package com.xonro.serviceno.bean.message.ordinary;
 
 /**
  * 视频消息/小视频消息
  * @author louie
  * @date 2018-2-8
  */
-public class VideoMsg {
+public class VideoMsg extends OrdinaryMessage{
     /**
      * 视频消息媒体id
      */

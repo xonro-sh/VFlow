@@ -1,4 +1,4 @@
-package com.xonro.serviceno.bean.message;
+package com.xonro.serviceno.bean.message.relpy;
 
 import com.xonro.serviceno.enums.WechatEnums;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author Alex
  * @date 2018/1/9
  */
-public class WechatMessage {
+public class ReplyWechatMessage {
     /**
      * 接收方帐号（收到的OpenID）
      */
@@ -38,7 +38,7 @@ public class WechatMessage {
      */
     private String articleCount;
 
-    public WechatMessage() {
+    public ReplyWechatMessage() {
     }
     /**
      * 文本消息 图片消息 语音消息
@@ -48,7 +48,7 @@ public class WechatMessage {
      * @param msgType 	text
      * @param content 内容
      */
-    public WechatMessage(String toUserName, String fromUserName, Long createTime, String msgType, String content) {
+    public ReplyWechatMessage(String toUserName, String fromUserName, Long createTime, String msgType, String content) {
         this.toUserName = toUserName;
         this.fromUserName = fromUserName;
         this.createTime = createTime;

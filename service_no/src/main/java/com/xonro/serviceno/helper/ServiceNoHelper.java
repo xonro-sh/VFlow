@@ -1,8 +1,8 @@
 package com.xonro.serviceno.helper;
 
 import com.thoughtworks.xstream.XStream;
-import com.xonro.serviceno.bean.message.WechatArticlesMessage;
-import com.xonro.serviceno.bean.message.WechatMediaMessage;
+import com.xonro.serviceno.bean.message.relpy.WechatArticlesMessage;
+import com.xonro.serviceno.bean.message.relpy.WechatMediaMessage;
 import com.xonro.serviceno.enums.WechatEnums;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -98,7 +98,7 @@ public class ServiceNoHelper {
     public static String beanToxml(Object object){
         XStream xstream = new XStream();
         xstream.alias("xml", object.getClass());
-        xstream.aliasField("com.xonro.serviceno.bean.message.WechatArticlesMessage", object.getClass(), "item");
+        xstream.aliasField("com.xonro.serviceno.bean.message.relpy.WechatArticlesMessage", object.getClass(), "item");
         return xstream.toXML(object);
     }
 

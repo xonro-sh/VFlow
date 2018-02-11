@@ -1,11 +1,11 @@
-package com.xonro.serviceno.bean.userMessage;
+package com.xonro.serviceno.bean.message.ordinary;
 
 /**
  * 语音消息
  * @author louie
  * @date 2018-2-8
  */
-public class VoiceMsg {
+public class VoiceMsg extends OrdinaryMessage{
     /**
      * 语音消息媒体id
      */

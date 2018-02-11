@@ -1,11 +1,11 @@
-package com.xonro.serviceno.bean.userMessage;
+package com.xonro.serviceno.bean.message.ordinary;
 
 /**
  * 地理位置消息
  * @author louie
  * @date 2018-2-8
  */
-public class LocationMsg {
+public class LocationMsg extends OrdinaryMessage {
     /**
      * 地理位置维度
      */
