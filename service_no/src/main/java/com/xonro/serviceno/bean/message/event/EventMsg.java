@@ -1,14 +1,14 @@
 package com.xonro.serviceno.bean.message.event;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.xonro.serviceno.bean.message.ordinary.OrdinaryMessage;
+import com.xonro.serviceno.bean.message.ordinary.OrdinaryMsg;
 
 /**
  * 公众号事件消息
  * @author louie
  * @date 2018-2-9
  */
-public class EventMessage extends OrdinaryMessage {
+public class EventMsg extends OrdinaryMsg {
 
     /**
      * 事件类型

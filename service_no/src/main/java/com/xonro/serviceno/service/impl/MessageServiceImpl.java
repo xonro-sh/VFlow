@@ -1,19 +1,15 @@
 package com.xonro.serviceno.service.impl;
 
-import com.alibaba.fastjson.JSON;
+import com.thoughtworks.xstream.XStream;
 import com.xonro.serviceno.bean.message.Message;
-import com.xonro.serviceno.bean.message.event.EventMessage;
+import com.xonro.serviceno.bean.message.event.EventMsg;
 import com.xonro.serviceno.bean.message.event.LocationEvent;
 import com.xonro.serviceno.bean.message.ordinary.*;
-import com.xonro.serviceno.bean.message.relpy.WechatArticlesMessage;
-import com.xonro.serviceno.bean.message.relpy.WechatMediaMessage;
-import com.xonro.serviceno.bean.message.relpy.ReplyWechatMessage;
 import com.xonro.serviceno.bean.user.UserInfo;
 import com.xonro.serviceno.dao.MessageRepository;
 import com.xonro.serviceno.dao.UserRepository;
 import com.xonro.serviceno.enums.WechatEnums;
 import com.xonro.serviceno.helper.MessageParser;
-import com.xonro.serviceno.helper.ServiceNoHelper;
 import com.xonro.serviceno.service.MessageService;
 import com.xonro.serviceno.service.UserService;
 import org.slf4j.Logger;
@@ -21,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Alex
@@ -49,43 +43,43 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public String parseMessage(String xmlMessage) {
         try {
-            OrdinaryMessage ordinaryMessage = new MessageParser(xmlMessage).parse();
-            String msgType = ordinaryMessage.getMsgType();
+            OrdinaryMsg ordinaryMsg = new MessageParser(xmlMessage).parse();
+            String msgType = ordinaryMsg.getMsgType();
 
             switch (msgType){
                 //文本消息
                 case "text":{
-                    return accessTextMessage(ordinaryMessage);
+                    return accessTextMessage(ordinaryMsg);
                 }
 
                 //图片消息
                 case "image":{
-                    return accessImageMessage((ImageMsg) ordinaryMessage);
+                    return accessImageMessage((ImageMsg) ordinaryMsg);
                 }
 
                 //语音消息
                 case "voice":{
-                    return accessVoiceMessage((VoiceMsg) ordinaryMessage);
+                    return accessVoiceMessage((VoiceMsg) ordinaryMsg);
                 }
 
                 //视频消息
                 case "video":{
-                    return accessVideoMessage((VideoMsg) ordinaryMessage);
+                    return accessVideoMessage((VideoMsg) ordinaryMsg);
                 }
 
                 //地理位置消息
                 case "location":{
-                    return accessLocationMessage((LocationMsg) ordinaryMessage);
+                    return accessLocationMessage((LocationMsg) ordinaryMsg);
                 }
 
                 //链接消息
                 case "link":{
-                    return accessLinkMessage((LinkMsg) ordinaryMessage);
+                    return accessLinkMessage((LinkMsg) ordinaryMsg);
                 }
 
                 //事件推送
                 case "event":{
-                    return accessEventMessage((EventMessage) ordinaryMessage);
+                    return accessEventMessage((EventMsg) ordinaryMsg);
                 }
                 default:return "";
             }
@@ -95,13 +89,20 @@ public class MessageServiceImpl implements MessageService{
         return "";
     }
 
+    @Override
+    public String replyMessage(OrdinaryMsg ordinaryMsg) {
+        XStream xStream = new XStream();
+        xStream.autodetectAnnotations(true);
+        return xStream.toXML(ordinaryMsg);
+    }
+
     /**
      * 处理文本消息，后续将扩展根据一定规则响应对应信息
      * 消息匹配规则将在后台系统实现
-     * @param ordinaryMessage
+     * @param ordinaryMsg
      * @return
      */
-    private String accessTextMessage(OrdinaryMessage ordinaryMessage){
+    private String accessTextMessage(OrdinaryMsg ordinaryMsg){
         // TODO: 2018-2-11 接收文本消息并做处理
         return "";
     }
@@ -165,7 +166,7 @@ public class MessageServiceImpl implements MessageService{
      * @param eventMessage
      * @return
      */
-    private String accessEventMessage(EventMessage eventMessage){
+    private String accessEventMessage(EventMsg eventMessage){
         String eventType = eventMessage.getEvent();
         String userOpenId = eventMessage.getFromUserName();
 
@@ -188,7 +189,7 @@ public class MessageServiceImpl implements MessageService{
         if (eventType.equals(WechatEnums.EVENT_UNSUBSCRIBE.getValue())){
             UserInfo userInfo = userRepository.findByOpenid(userOpenId);
             if (userInfo != null){
-                userInfo.setSubscribe(userService.getUserInfo(userOpenId).getSubscribe());
+                userInfo.setSubscribe(0);
                 userRepository.save(userInfo);
             }
         }
@@ -208,29 +209,30 @@ public class MessageServiceImpl implements MessageService{
 
 
     public String replyMessage(String msgType, String openId, String wechatId, String content){
-        if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())) {
-            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, content)));
-        } else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue()) || msgType.equals(WechatEnums.MSG_TYPE_VOICE.getValue())) {
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
-            String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("2ISU_cKchVgMoCS_kC5a3Z46hcrYrN2cU3VImUIK9LKUjB0PeWa5ZjfjO3D4hAWf"),"image");
-            return xml2==null?null:xml1.concat(xml2);
-        } else if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue())){
-            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "")));
-        } else if (msgType.equals(WechatEnums.MSG_TYPE_MUSIC.getValue())){
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
-            String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("测试音乐消息", "TaylorSwift", "http://url.cn/5gwf6be", "http://url.cn/5gwf6be", "kDYbKqfRkWtL1upUgPWg35poCbXpGdYkhSIyCB5jTpjMsytS8PQaaih8ML8nXgBt"),msgType);
-            return xml2==null?null:xml1.concat(xml2);
-        } else {
-            WechatArticlesMessage wechatArticlesMessage = new WechatArticlesMessage("111", "测试1", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515586204344&di=07bc4720448ac27002f945959bebd443&imgtype=0&src=http%3A%2F%2Fmp3.qiyipic.com%2Fimage%2F20170727%2F96%2Fae%2Fh_1037091770_h_601_400_400.jpg", "www.baidu.com");
-            WechatArticlesMessage wechatArticlesMessage1 = new WechatArticlesMessage("222", "测试2", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516180979&di=76ad1dd7ac4d97ed1e7d6c85b7d25e6a&imgtype=jpg&er=1&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201502%2F10%2F20150210221954_f4zKK.thumb.700_0.jpeg", "www.baidu.com");
-            List<WechatArticlesMessage> wechatArticlesMessages = new ArrayList<>();
-            wechatArticlesMessages.add(wechatArticlesMessage);
-            wechatArticlesMessages.add(wechatArticlesMessage1);
-            //多条图文消息
-            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "2"))).replace("</xml>", "");
-            String xml2 = ServiceNoHelper.getArticlesXml(wechatArticlesMessages);
-
-            return xml1.concat(xml2);
-        }
+//        if (msgType.equals(WechatEnums.MSG_TYPE_TEXT.getValue())) {
+//            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, content)));
+//        } else if (msgType.equals(WechatEnums.MSG_TYPE_IMAGE.getValue()) || msgType.equals(WechatEnums.MSG_TYPE_VOICE.getValue())) {
+//            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
+//            String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("2ISU_cKchVgMoCS_kC5a3Z46hcrYrN2cU3VImUIK9LKUjB0PeWa5ZjfjO3D4hAWf"),"image");
+//            return xml2==null?null:xml1.concat(xml2);
+//        } else if (msgType.equals(WechatEnums.MSG_TYPE_VIDEO.getValue())){
+//            return ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "")));
+//        } else if (msgType.equals(WechatEnums.MSG_TYPE_MUSIC.getValue())){
+//            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, ""))).replace("</xml>", "");
+//            String xml2 = ServiceNoHelper.getExtMessageXml(new WechatMediaMessage("测试音乐消息", "TaylorSwift", "http://url.cn/5gwf6be", "http://url.cn/5gwf6be", "kDYbKqfRkWtL1upUgPWg35poCbXpGdYkhSIyCB5jTpjMsytS8PQaaih8ML8nXgBt"),msgType);
+//            return xml2==null?null:xml1.concat(xml2);
+//        } else {
+//            WechatArticlesMessage wechatArticlesMessage = new WechatArticlesMessage("111", "测试1", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1515586204344&di=07bc4720448ac27002f945959bebd443&imgtype=0&src=http%3A%2F%2Fmp3.qiyipic.com%2Fimage%2F20170727%2F96%2Fae%2Fh_1037091770_h_601_400_400.jpg", "www.baidu.com");
+//            WechatArticlesMessage wechatArticlesMessage1 = new WechatArticlesMessage("222", "测试2", "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516180979&di=76ad1dd7ac4d97ed1e7d6c85b7d25e6a&imgtype=jpg&er=1&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201502%2F10%2F20150210221954_f4zKK.thumb.700_0.jpeg", "www.baidu.com");
+//            List<WechatArticlesMessage> wechatArticlesMessages = new ArrayList<>();
+//            wechatArticlesMessages.add(wechatArticlesMessage);
+//            wechatArticlesMessages.add(wechatArticlesMessage1);
+//            //多条图文消息
+//            String xml1 = ServiceNoHelper.xmlInitialUppercase(ServiceNoHelper.beanToxml(new ReplyWechatMessage(openId, wechatId, System.currentTimeMillis()/1000, msgType, "2"))).replace("</xml>", "");
+//            String xml2 = ServiceNoHelper.getArticlesXml(wechatArticlesMessages);
+//
+//            return xml1.concat(xml2);
+//        }
+        return "";
     }
 }

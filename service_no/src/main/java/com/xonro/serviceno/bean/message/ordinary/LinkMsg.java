@@ -7,7 +7,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author louie
  * @date 2018-2-8
  */
-public class LinkMsg extends OrdinaryMessage {
+public class LinkMsg extends OrdinaryMsg {
 
     /**
      * 消息标题

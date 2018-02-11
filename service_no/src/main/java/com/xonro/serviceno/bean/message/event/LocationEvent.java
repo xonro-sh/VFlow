@@ -7,7 +7,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author louie
  * @date 2018-2-9
  */
-public class LocationEvent extends EventMessage{
+public class LocationEvent extends EventMsg {
 
     /**
      * 地理位置纬度

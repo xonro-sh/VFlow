@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 
 @XStreamAlias("xml")
-public class OrdinaryMessage {
+public class OrdinaryMsg {
 
     /**
      * 开发者微信号

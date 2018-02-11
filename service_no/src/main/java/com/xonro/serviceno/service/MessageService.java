@@ -1,5 +1,7 @@
 package com.xonro.serviceno.service;
 
+import com.xonro.serviceno.bean.message.ordinary.OrdinaryMsg;
+
 /**
  * 消息相关业务服务接口
  * @author louie modified by Alex
@@ -11,5 +13,12 @@ public interface MessageService {
      * @param xmlMessage 微信平台post的消息xml
      * @return 是否成功 返回""或者SUCCESS都为成功
      */
-    String parseMessage(String xmlMessage);
+    public String parseMessage(String xmlMessage);
+
+    /**
+     * 被动回复用户消息
+     * @param ordinaryMsg 回复用户消息对象
+     * @return 回复用户的xml格式消息
+     */
+    public String replyMessage(OrdinaryMsg ordinaryMsg);
 }

@@ -1,7 +1,7 @@
 package com.xonro.serviceno.helper;
 
 import com.alibaba.fastjson.JSON;
-import com.xonro.serviceno.bean.message.event.EventMessage;
+import com.xonro.serviceno.bean.message.event.EventMsg;
 import com.xonro.serviceno.bean.message.event.LocationEvent;
 import com.xonro.serviceno.bean.message.ordinary.*;
 import com.xonro.serviceno.enums.WechatEnums;
@@ -38,7 +38,7 @@ public class MessageParser {
      * 解析消息数据
      * @return
      */
-    public OrdinaryMessage parse() throws DocumentException {
+    public OrdinaryMsg parse() throws DocumentException {
         messageData = new HashMap<>();
         try {
             Document document = DocumentHelper.parseText(xmlMessage);
@@ -60,13 +60,13 @@ public class MessageParser {
      * 解析消息
      * @return
      */
-    private OrdinaryMessage parseMessage(){
+    private OrdinaryMsg parseMessage(){
         String msgType = messageData.get("MsgType");
 
         switch (msgType){
             //文本消息
             case "text":{
-                return JSON.parseObject(JSON.toJSONString(messageData),OrdinaryMessage.class);
+                return JSON.parseObject(JSON.toJSONString(messageData),OrdinaryMsg.class);
             }
 
             //图片消息
@@ -102,7 +102,7 @@ public class MessageParser {
                 if (event.equals(WechatEnums.EVENT_LOCATION.getValue())){
                     return JSON.parseObject(JSON.toJSONString(messageData), LocationEvent.class);
                 }else {
-                    return JSON.parseObject(JSON.toJSONString(messageData), EventMessage.class);
+                    return JSON.parseObject(JSON.toJSONString(messageData), EventMsg.class);
                 }
             }
             default :return null;
