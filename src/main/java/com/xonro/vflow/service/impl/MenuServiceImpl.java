@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -61,7 +62,8 @@ public class MenuServiceImpl implements MenuService{
         baseResponse.setCode("0");
         baseResponse.setMsg("");
         try {
-            baseResponse.setData(JSON.toJSONString(menuRepository.findAll()));
+            Sort sort = new Sort(Sort.Direction.ASC, "itemNo");
+            baseResponse.setData(JSON.toJSONString(menuRepository.findAll(sort)));
         } catch (Exception e){
             baseResponse.setOk(false);
             baseResponse.setMsg(e.getMessage());
